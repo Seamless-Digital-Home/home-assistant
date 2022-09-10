@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "minor_version": 1,
+  "key": "input_number",
+  "data": {
+    "items": [
+      {
+        "min": 17.0,
+        "max": 29.0,
+        "name": "AC::temp",
+        "unit_of_measurement": "ºC",
+        "icon": "mdi:temperature-celsius",
+        "mode": "slider",
+        "step": 1.0,
+        "id": "ac_temp"
+      }
+    ]
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "version": 1,
+  "minor_version": 1,
+  "key": "input_boolean",
+  "data": {
+    "items": [
+      {
+        "name": "pre_night_mode",
+        "id": "pre_night_mode"
+      },
+      {
+        "name": "night_mode",
+        "id": "night_mode"
+      },
+      {
+        "name": "AC::power",
+        "icon": "mdi:power-plug-outline",
+        "id": "ac_power"
+      },
+      {
+        "name": "Автовентилляция | Туалет",
+        "icon": "mdi:fan-auto",
+        "id": "avtoventilliatsiia_tualet"
+      },
+      {
+        "name": "Автосвет | Ванная",
+        "icon": "mdi:flash-auto",
+        "id": "avtosvet_vannaia"
+      },
+      {
+        "name": "ac_led",
+        "icon": "mdi:led-variant-outline",
+        "id": "ac_led"
+      },
+      {
+        "name": "autolight_toilet",
+        "icon": "mdi:lightbulb-auto",
+        "id": "autolight_toilet"
+      }
+    ]
+  }
+}

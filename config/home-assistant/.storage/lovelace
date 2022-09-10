@@ -1,0 +1,1171 @@
+{
+  "version": 1,
+  "minor_version": 1,
+  "key": "lovelace",
+  "data": {
+    "config": {
+      "background": "var(--background-image)",
+      "views": [
+        {
+          "title": "Home",
+          "cards": [
+            {
+              "type": "vertical-stack",
+              "cards": [
+                {
+                  "type": "custom:mushroom-chips-card",
+                  "chips": [
+                    {
+                      "type": "entity",
+                      "entity": "person.andrei",
+                      "icon": "mdi:face-man",
+                      "use_entity_picture": true
+                    },
+                    {
+                      "type": "entity",
+                      "entity": "person.nastya",
+                      "icon": "mdi:face-woman",
+                      "use_entity_picture": true
+                    },
+                    {
+                      "type": "entity",
+                      "entity": "binary_sensor.home_motion"
+                    },
+                    {
+                      "type": "conditional",
+                      "conditions": [
+                        {
+                          "entity": "input_boolean.somebody_at_home",
+                          "state": "on"
+                        }
+                      ],
+                      "chip": {
+                        "type": "entity",
+                        "entity": "input_boolean.somebody_at_home",
+                        "name": "Никого дома нет",
+                        "tap_action": {
+                          "action": "toggle"
+                        },
+                        "hold_action": {
+                          "action": "more-info"
+                        },
+                        "double_tap_action": {
+                          "action": "more-info"
+                        },
+                        "content_info": "name",
+                        "icon": "mdi:home-import-outline"
+                      }
+                    },
+                    {
+                      "type": "conditional",
+                      "conditions": [
+                        {
+                          "entity": "input_boolean.somebody_at_home",
+                          "state": "off"
+                        }
+                      ],
+                      "chip": {
+                        "type": "entity",
+                        "entity": "input_boolean.somebody_at_home",
+                        "name": "Я дома",
+                        "icon": "mdi:home",
+                        "tap_action": {
+                          "action": "toggle"
+                        },
+                        "hold_action": {
+                          "action": "more-info"
+                        },
+                        "double_tap_action": {
+                          "action": "more-info"
+                        },
+                        "content_info": "name"
+                      }
+                    },
+                    {
+                      "type": "weather",
+                      "entity": "weather.yandex_weather",
+                      "show_conditions": true,
+                      "show_temperature": true
+                    },
+                    {
+                      "type": "entity",
+                      "entity": "sensor.air_quality_index"
+                    }
+                  ]
+                },
+                {
+                  "type": "custom:mushroom-title-card",
+                  "title": "Спальня"
+                },
+                {
+                  "type": "custom:mushroom-chips-card",
+                  "chips": [
+                    {
+                      "type": "entity",
+                      "entity": "sensor.humidifier_humidity"
+                    },
+                    {
+                      "type": "entity",
+                      "entity": "sensor.humidifier_temperature"
+                    },
+                    {
+                      "type": "entity",
+                      "entity": "binary_sensor.door_bedroom_contact"
+                    },
+                    {
+                      "type": "entity",
+                      "entity": "binary_sensor.ws_bedroom_water_leak"
+                    },
+                    {
+                      "type": "entity",
+                      "entity": "binary_sensor.ms_bedroom_occupancy"
+                    }
+                  ]
+                },
+                {
+                  "square": false,
+                  "columns": 2,
+                  "type": "grid",
+                  "cards": [
+                    {
+                      "type": "custom:mushroom-light-card",
+                      "entity": "light.chandelier_bedroom",
+                      "fill_container": false,
+                      "use_light_color": true,
+                      "show_brightness_control": false,
+                      "show_color_temp_control": false,
+                      "show_color_control": false,
+                      "collapsible_controls": false,
+                      "name": "Люстра",
+                      "hold_action": {
+                        "action": "more-info"
+                      },
+                      "double_tap_action": {
+                        "action": "more-info"
+                      }
+                    },
+                    {
+                      "type": "custom:mushroom-light-card",
+                      "entity": "light.bedside",
+                      "use_light_color": true,
+                      "show_brightness_control": false,
+                      "show_color_control": false,
+                      "show_color_temp_control": false,
+                      "hold_action": {
+                        "action": "more-info"
+                      },
+                      "double_tap_action": {
+                        "action": "more-info"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "custom:mushroom-light-card",
+                  "entity": "light.fontan"
+                },
+                {
+                  "type": "custom:mini-climate",
+                  "entity": "climate.split_sistema",
+                  "hide_current_temperature": true,
+                  "buttons": {
+                    "led": {
+                      "icon": "mdi:led-variant-outline",
+                      "state": {
+                        "entity": "input_boolean.ac_led"
+                      },
+                      "toggle_action": "(state) => this.call_service('input_boolean', 'toggle', { entity_id: \"input_boolean.ac_led\"})\n"
+                    },
+                    "door": {
+                      "icon": "mdi:door",
+                      "state": {
+                        "entity": "automation.ac_door_check"
+                      },
+                      "toggle_action": "(state) => this.call_service('automation', 'toggle', { entity_id: \"automation.ac_door_check\"})\n"
+                    }
+                  }
+                },
+                {
+                  "square": true,
+                  "columns": 5,
+                  "type": "grid",
+                  "cards": [
+                    {
+                      "show_name": false,
+                      "show_icon": true,
+                      "type": "button",
+                      "tap_action": {
+                        "action": "toggle"
+                      },
+                      "entity": "switch.table_l5",
+                      "icon": "mdi:usb"
+                    },
+                    {
+                      "show_name": false,
+                      "show_icon": true,
+                      "type": "button",
+                      "tap_action": {
+                        "action": "toggle"
+                      },
+                      "entity": "switch.monitors",
+                      "icon": "mdi:monitor",
+                      "name": "LEFT"
+                    },
+                    {
+                      "show_name": false,
+                      "show_icon": true,
+                      "type": "button",
+                      "tap_action": {
+                        "action": "toggle"
+                      },
+                      "entity": "switch.table_l1",
+                      "icon": "mdi:microsoft-windows"
+                    },
+                    {
+                      "show_name": false,
+                      "show_icon": true,
+                      "type": "button",
+                      "tap_action": {
+                        "action": "toggle"
+                      },
+                      "entity": "switch.table_l2",
+                      "icon": "mdi:laptop"
+                    },
+                    {
+                      "show_name": false,
+                      "show_icon": true,
+                      "type": "button",
+                      "tap_action": {
+                        "action": "toggle"
+                      },
+                      "entity": "switch.switch_table_global",
+                      "icon": ""
+                    }
+                  ]
+                },
+                {
+                  "type": "custom:mini-humidifier",
+                  "entity": "fan.humidifier",
+                  "model": "xiaomi_miio_airpurifier:zhimi.humidifier.ca4"
+                }
+              ]
+            },
+            {
+              "type": "vertical-stack",
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "title": "Кухня"
+                },
+                {
+                  "type": "custom:mushroom-chips-card",
+                  "chips": [
+                    {
+                      "type": "entity",
+                      "entity": "sensor.kitchen_humidity"
+                    },
+                    {
+                      "type": "entity",
+                      "entity": "sensor.kitchen_temperature"
+                    },
+                    {
+                      "type": "entity",
+                      "entity": "binary_sensor.ws_kitchen_water_leak"
+                    },
+                    {
+                      "type": "entity",
+                      "entity": "binary_sensor.ms_kitchen_occupancy"
+                    }
+                  ]
+                },
+                {
+                  "square": false,
+                  "columns": 2,
+                  "type": "grid",
+                  "cards": [
+                    {
+                      "type": "custom:mushroom-light-card",
+                      "entity": "light.chandelier_kitchen",
+                      "name": "Люстра",
+                      "tap_action": {
+                        "action": "toggle"
+                      },
+                      "hold_action": {
+                        "action": "more-info"
+                      },
+                      "double_tap_action": {
+                        "action": "more-info"
+                      }
+                    },
+                    {
+                      "type": "custom:mushroom-entity-card",
+                      "entity": "light.led_strip",
+                      "name": "Лента",
+                      "tap_action": {
+                        "action": "toggle"
+                      },
+                      "hold_action": {
+                        "action": "more-info"
+                      },
+                      "double_tap_action": {
+                        "action": "more-info"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "entities",
+                  "show_header_toggle": false,
+                  "entities": [
+                    {
+                      "type": "custom:mushroom-light-card",
+                      "entity": "light.hub",
+                      "name": "Ночник",
+                      "tap_action": {
+                        "action": "toggle"
+                      },
+                      "hold_action": {
+                        "action": "more-info"
+                      },
+                      "double_tap_action": {
+                        "action": "more-info"
+                      },
+                      "use_light_color": true,
+                      "show_brightness_control": true,
+                      "icon_type": "entity-picture",
+                      "primary_info": "name",
+                      "secondary_info": "none",
+                      "show_color_control": false,
+                      "collapsible_controls": true
+                    },
+                    {
+                      "type": "custom:rgb-light-card",
+                      "entity": "light.hub",
+                      "colors": [
+                        {
+                          "rgb_color": [
+                            255,
+                            74,
+                            254
+                          ],
+                          "brightness": 255,
+                          "transition": 1
+                        },
+                        {
+                          "rgb_color": [
+                            234,
+                            136,
+                            140
+                          ],
+                          "brightness": 255,
+                          "transition": 1
+                        },
+                        {
+                          "rgb_color": [
+                            251,
+                            180,
+                            139
+                          ],
+                          "brightness": 255,
+                          "transition": 1
+                        },
+                        {
+                          "rgb_color": [
+                            136,
+                            198,
+                            237
+                          ],
+                          "brightness": 255,
+                          "transition": 1
+                        },
+                        {
+                          "rgb_color": [
+                            140,
+                            231,
+                            185
+                          ],
+                          "brightness": 255,
+                          "transition": 1
+                        },
+                        {
+                          "rgb_color": [
+                            64,
+                            255,
+                            1
+                          ],
+                          "brightness": 255,
+                          "transition": 1
+                        }
+                      ]
+                    }
+                  ],
+                  "state_color": true
+                },
+                {
+                  "type": "conditional",
+                  "conditions": [
+                    {
+                      "entity": "switch.kitchen",
+                      "state": "on"
+                    }
+                  ],
+                  "card": {
+                    "type": "custom:mushroom-entity-card",
+                    "entity": "sensor.table_kitchen_watts",
+                    "tap_action": {
+                      "action": "call-service",
+                      "service": "switch.toggle",
+                      "service_data": {},
+                      "target": {
+                        "entity_id": "switch.kitchen"
+                      }
+                    },
+                    "name": "Микроволновая печь"
+                  }
+                },
+                {
+                  "type": "conditional",
+                  "conditions": [
+                    {
+                      "entity": "switch.kitchen",
+                      "state": "off"
+                    }
+                  ],
+                  "card": {
+                    "type": "custom:mushroom-entity-card",
+                    "entity": "switch.kitchen",
+                    "tap_action": {
+                      "action": "toggle"
+                    }
+                  }
+                },
+                {
+                  "type": "custom:mushroom-title-card",
+                  "title": "Балкон"
+                },
+                {
+                  "type": "custom:mushroom-chips-card",
+                  "chips": [
+                    {
+                      "type": "entity",
+                      "entity": "binary_sensor.door_balcony_contact"
+                    }
+                  ]
+                },
+                {
+                  "type": "horizontal-stack",
+                  "cards": [
+                    {
+                      "type": "custom:mushroom-light-card",
+                      "entity": "light.balcony_left"
+                    },
+                    {
+                      "type": "custom:mushroom-light-card",
+                      "entity": "light.balcony_right"
+                    }
+                  ]
+                },
+                {
+                  "type": "custom:mushroom-title-card",
+                  "title": "Коридор"
+                },
+                {
+                  "type": "custom:mushroom-chips-card",
+                  "chips": [
+                    {
+                      "type": "entity",
+                      "entity": "binary_sensor.door_main_contact"
+                    },
+                    {
+                      "type": "entity",
+                      "entity": "binary_sensor.ms_hall_occupancy"
+                    }
+                  ]
+                },
+                {
+                  "square": false,
+                  "columns": 2,
+                  "type": "grid",
+                  "cards": [
+                    {
+                      "type": "custom:mushroom-light-card",
+                      "entity": "light.chandelier_hall",
+                      "name": "Люстра",
+                      "tap_action": {
+                        "action": "toggle"
+                      },
+                      "hold_action": {
+                        "action": "more-info"
+                      },
+                      "double_tap_action": {
+                        "action": "toggle"
+                      }
+                    },
+                    {
+                      "type": "custom:mushroom-light-card",
+                      "entity": "light.light_hall",
+                      "name": "Ночник",
+                      "tap_action": {
+                        "action": "toggle"
+                      },
+                      "hold_action": {
+                        "action": "more-info"
+                      },
+                      "double_tap_action": {
+                        "action": "more-info"
+                      },
+                      "use_light_color": true,
+                      "show_brightness_control": false
+                    }
+                  ]
+                },
+                {
+                  "type": "conditional",
+                  "conditions": [
+                    {
+                      "entity": "switch.scooters",
+                      "state": "on"
+                    }
+                  ],
+                  "card": {
+                    "type": "custom:mushroom-entity-card",
+                    "entity": "sensor.scooters_power",
+                    "tap_action": {
+                      "action": "call-service",
+                      "service": "switch.toggle",
+                      "service_data": {},
+                      "target": {
+                        "entity_id": "switch.scooters"
+                      }
+                    },
+                    "name": "Самокаты"
+                  }
+                },
+                {
+                  "type": "conditional",
+                  "conditions": [
+                    {
+                      "entity": "switch.scooters",
+                      "state": "off"
+                    }
+                  ],
+                  "card": {
+                    "type": "custom:mushroom-entity-card",
+                    "entity": "switch.scooters",
+                    "tap_action": {
+                      "action": "toggle"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "vertical-stack",
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "title": "Ванная"
+                },
+                {
+                  "type": "custom:mushroom-chips-card",
+                  "chips": [
+                    {
+                      "type": "entity",
+                      "entity": "sensor.bathroom_humidity"
+                    },
+                    {
+                      "type": "entity",
+                      "entity": "sensor.bathroom_temperature"
+                    },
+                    {
+                      "type": "entity",
+                      "entity": "binary_sensor.ws_bathroom_water_leak"
+                    },
+                    {
+                      "type": "entity",
+                      "entity": "binary_sensor.bathroom_motion"
+                    }
+                  ]
+                },
+                {
+                  "square": false,
+                  "columns": 2,
+                  "type": "grid",
+                  "cards": [
+                    {
+                      "type": "custom:mushroom-light-card",
+                      "entity": "light.bathroom",
+                      "name": "Свет"
+                    },
+                    {
+                      "type": "custom:mushroom-entity-card",
+                      "entity": "input_boolean.manual_vent",
+                      "name": "Вентиляция",
+                      "tap_action": {
+                        "action": "toggle"
+                      },
+                      "hold_action": {
+                        "action": "toggle"
+                      },
+                      "double_tap_action": {
+                        "action": "toggle"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "conditional",
+                  "conditions": [
+                    {
+                      "entity": "switch.washer_socket",
+                      "state": "on"
+                    }
+                  ],
+                  "card": {
+                    "type": "custom:mushroom-entity-card",
+                    "entity": "sensor.washer_socket_power",
+                    "tap_action": {
+                      "action": "call-service",
+                      "service": "switch.toggle",
+                      "service_data": {},
+                      "target": {
+                        "entity_id": "switch.washer_socket"
+                      }
+                    },
+                    "name": "Стиральная машина"
+                  }
+                },
+                {
+                  "type": "conditional",
+                  "conditions": [
+                    {
+                      "entity": "switch.washer_socket",
+                      "state": "off"
+                    }
+                  ],
+                  "card": {
+                    "type": "custom:mushroom-entity-card",
+                    "entity": "switch.washer_socket",
+                    "tap_action": {
+                      "action": "toggle"
+                    }
+                  }
+                },
+                {
+                  "type": "custom:mushroom-title-card",
+                  "title": "Туалет"
+                },
+                {
+                  "type": "custom:mushroom-chips-card",
+                  "chips": [
+                    {
+                      "type": "entity",
+                      "entity": "binary_sensor.door_toilet_contact"
+                    },
+                    {
+                      "type": "entity",
+                      "entity": "binary_sensor.ws_toilet_water_leak"
+                    },
+                    {
+                      "type": "entity",
+                      "entity": "binary_sensor.ms_toilet_occupancy"
+                    }
+                  ]
+                },
+                {
+                  "square": false,
+                  "columns": 2,
+                  "type": "grid",
+                  "cards": [
+                    {
+                      "type": "custom:mushroom-light-card",
+                      "entity": "light.toilet",
+                      "name": "Свет"
+                    },
+                    {
+                      "type": "custom:mushroom-entity-card",
+                      "entity": "input_boolean.manual_vent_toilet",
+                      "name": "Вентиляция",
+                      "tap_action": {
+                        "action": "toggle"
+                      },
+                      "hold_action": {
+                        "action": "toggle"
+                      },
+                      "double_tap_action": {
+                        "action": "toggle"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "custom:mushroom-light-card",
+                  "entity": "light.ls_toilet",
+                  "name": "Подсветка",
+                  "use_light_color": true,
+                  "show_brightness_control": true,
+                  "show_color_control": true,
+                  "collapsible_controls": true,
+                  "tap_action": {
+                    "action": "toggle"
+                  },
+                  "hold_action": {
+                    "action": "more-info"
+                  },
+                  "double_tap_action": {
+                    "action": "more-info"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-title-card",
+                  "title": "Погода"
+                },
+                {
+                  "type": "custom:hourly-weather",
+                  "entity": "weather.umnyi_dom",
+                  "num_segments": "8",
+                  "name": " ",
+                  "label_spacing": "2",
+                  "icons": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "theme": "Backend-selected",
+          "title": "Кухня",
+          "path": "",
+          "icon": "mdi:fridge",
+          "badges": [],
+          "cards": [
+            {
+              "type": "vertical-stack",
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "title": "Кухня"
+                },
+                {
+                  "type": "custom:mushroom-chips-card",
+                  "chips": [
+                    {
+                      "type": "entity",
+                      "entity": "sensor.kitchen_humidity"
+                    },
+                    {
+                      "type": "entity",
+                      "entity": "sensor.kitchen_temperature"
+                    },
+                    {
+                      "type": "entity",
+                      "entity": "binary_sensor.ws_kitchen_water_leak"
+                    }
+                  ]
+                },
+                {
+                  "square": false,
+                  "columns": 2,
+                  "type": "grid",
+                  "cards": [
+                    {
+                      "type": "custom:mushroom-light-card",
+                      "entity": "light.chandelier_kitchen",
+                      "name": "Люстра",
+                      "tap_action": {
+                        "action": "toggle"
+                      },
+                      "hold_action": {
+                        "action": "more-info"
+                      },
+                      "double_tap_action": {
+                        "action": "more-info"
+                      }
+                    },
+                    {
+                      "type": "custom:mushroom-entity-card",
+                      "entity": "light.led_strip",
+                      "name": "Лента",
+                      "tap_action": {
+                        "action": "toggle"
+                      },
+                      "hold_action": {
+                        "action": "more-info"
+                      },
+                      "double_tap_action": {
+                        "action": "more-info"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "custom:mushroom-entity-card",
+                  "entity": "switch.kitchen",
+                  "tap_action": {
+                    "action": "toggle"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-light-card",
+                  "entity": "light.hub",
+                  "fill_container": false,
+                  "use_light_color": true,
+                  "show_brightness_control": true,
+                  "show_color_control": true,
+                  "show_color_temp_control": true,
+                  "collapsible_controls": false
+                },
+                {
+                  "type": "entities",
+                  "entities": [
+                    {
+                      "entity": "input_boolean.autolight_kitchen_night_light"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "vertical-stack",
+              "cards": [
+                {
+                  "show_name": true,
+                  "show_icon": true,
+                  "show_state": true,
+                  "type": "glance",
+                  "entities": [
+                    {
+                      "entity": "sensor.posudomoechnaia_mashina_operation_state"
+                    },
+                    {
+                      "entity": "sensor.posudomoechnaia_mashina_program_progress"
+                    },
+                    {
+                      "entity": "sensor.posudomoechnaia_mashina_remaining_program_time"
+                    }
+                  ],
+                  "title": "Посудомоечная машина",
+                  "state_color": true
+                },
+                {
+                  "hours_to_show": 24,
+                  "graph": "line",
+                  "type": "sensor",
+                  "entity": "sensor.kitchen_temperature",
+                  "detail": 1,
+                  "name": "Температура в кухне"
+                },
+                {
+                  "hours_to_show": 24,
+                  "graph": "line",
+                  "type": "sensor",
+                  "entity": "sensor.kitchen_humidity",
+                  "detail": 1,
+                  "name": "Влажность в кухне"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "theme": "ios-dark-mode",
+          "title": "Коридор",
+          "path": "",
+          "icon": "mdi:door-closed",
+          "badges": [],
+          "cards": [
+            {
+              "type": "vertical-stack",
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "title": "Коридор"
+                },
+                {
+                  "type": "custom:mushroom-chips-card",
+                  "chips": [
+                    {
+                      "type": "entity",
+                      "entity": "binary_sensor.door_main_contact"
+                    }
+                  ]
+                },
+                {
+                  "square": false,
+                  "columns": 2,
+                  "type": "grid",
+                  "cards": [
+                    {
+                      "type": "custom:mushroom-light-card",
+                      "entity": "light.chandelier_hall",
+                      "name": "Люстра",
+                      "tap_action": {
+                        "action": "toggle"
+                      },
+                      "hold_action": {
+                        "action": "more-info"
+                      },
+                      "double_tap_action": {
+                        "action": "toggle"
+                      }
+                    },
+                    {
+                      "type": "custom:mushroom-light-card",
+                      "entity": "light.light_hall",
+                      "name": "Ночник",
+                      "tap_action": {
+                        "action": "toggle"
+                      },
+                      "hold_action": {
+                        "action": "more-info"
+                      },
+                      "double_tap_action": {
+                        "action": "more-info"
+                      },
+                      "use_light_color": true,
+                      "show_brightness_control": false
+                    }
+                  ]
+                },
+                {
+                  "type": "custom:mushroom-entity-card",
+                  "entity": "sensor.scooters_power",
+                  "name": "Самокаты",
+                  "tap_action": {
+                    "action": "call-service",
+                    "service": "switch.toggle",
+                    "service_data": {},
+                    "target": {
+                      "entity_id": "switch.scooters"
+                    }
+                  }
+                },
+                {
+                  "type": "entities",
+                  "entities": [
+                    {
+                      "entity": "input_boolean.autolight_hall_chandelier",
+                      "secondary_info": "none",
+                      "name": "Автосвет по движению"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "theme": "Backend-selected",
+          "title": "Санузел",
+          "path": "",
+          "icon": "mdi:shower",
+          "badges": [],
+          "cards": [
+            {
+              "type": "vertical-stack",
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "title": "Ванная"
+                },
+                {
+                  "type": "custom:mushroom-chips-card",
+                  "chips": [
+                    {
+                      "type": "entity",
+                      "entity": "sensor.bathroom_humidity"
+                    },
+                    {
+                      "type": "entity",
+                      "entity": "sensor.bathroom_temperature"
+                    },
+                    {
+                      "type": "entity",
+                      "entity": "binary_sensor.ws_bathroom_water_leak"
+                    }
+                  ]
+                },
+                {
+                  "square": false,
+                  "columns": 2,
+                  "type": "grid",
+                  "cards": [
+                    {
+                      "type": "custom:mushroom-light-card",
+                      "entity": "light.bathroom",
+                      "name": "Свет"
+                    },
+                    {
+                      "type": "custom:mushroom-entity-card",
+                      "entity": "input_boolean.manual_vent",
+                      "name": "Вентиляция",
+                      "tap_action": {
+                        "action": "toggle"
+                      },
+                      "hold_action": {
+                        "action": "toggle"
+                      },
+                      "double_tap_action": {
+                        "action": "toggle"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "custom:mushroom-entity-card",
+                  "entity": "switch.washer_socket",
+                  "tap_action": {
+                    "action": "toggle"
+                  },
+                  "hold_action": {
+                    "action": "toggle"
+                  },
+                  "double_tap_action": {
+                    "action": "toggle"
+                  }
+                },
+                {
+                  "type": "entities",
+                  "entities": [
+                    {
+                      "entity": "input_number.hum_high_on",
+                      "name": "Влажность включения"
+                    },
+                    {
+                      "entity": "input_number.hum_low_off",
+                      "name": "Влажность выключения"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "vertical-stack",
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "title": "Туалет"
+                },
+                {
+                  "type": "custom:mushroom-chips-card",
+                  "chips": [
+                    {
+                      "type": "entity",
+                      "entity": "binary_sensor.door_toilet_contact"
+                    },
+                    {
+                      "type": "entity",
+                      "entity": "binary_sensor.ws_toilet_water_leak"
+                    }
+                  ]
+                },
+                {
+                  "square": false,
+                  "columns": 2,
+                  "type": "grid",
+                  "cards": [
+                    {
+                      "type": "custom:mushroom-light-card",
+                      "entity": "light.toilet",
+                      "name": "Свет"
+                    },
+                    {
+                      "type": "custom:mushroom-entity-card",
+                      "entity": "input_boolean.manual_vent_toilet",
+                      "name": "Вентиляция",
+                      "tap_action": {
+                        "action": "toggle"
+                      },
+                      "hold_action": {
+                        "action": "toggle"
+                      },
+                      "double_tap_action": {
+                        "action": "toggle"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "vertical-stack",
+                  "cards": [
+                    {
+                      "type": "entities",
+                      "entities": [
+                        {
+                          "entity": "input_boolean.autolight_toilet",
+                          "name": "Авто свет"
+                        },
+                        {
+                          "entity": "input_boolean.autovent_toilet",
+                          "name": "Авто вентилляция"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "entities",
+                  "entities": [
+                    {
+                      "entity": "timer.vent_toilet_off"
+                    },
+                    {
+                      "entity": "timer.toilet_light_off"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "vertical-stack",
+              "cards": [
+                {
+                  "type": "entities",
+                  "entities": [
+                    {
+                      "entity": "sensor.washer_socket_power"
+                    },
+                    {
+                      "entity": "sensor.washer_socket_energy"
+                    },
+                    {
+                      "entity": "input_boolean.turn_off_washer_socket",
+                      "name": "Автовыключение стиралки 00:00-09:30"
+                    }
+                  ],
+                  "title": "Стиральная машина"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "theme": "Backend-selected",
+          "title": "Спальня",
+          "path": "",
+          "icon": "mdi:bed-king-outline",
+          "badges": [],
+          "cards": [
+            {
+              "hours_to_show": 24,
+              "graph": "line",
+              "type": "sensor",
+              "entity": "sensor.humidifier_temperature",
+              "detail": 2,
+              "name": "Температура в спальне"
+            },
+            {
+              "hours_to_show": 24,
+              "graph": "line",
+              "type": "sensor",
+              "entity": "sensor.humidifier_humidity",
+              "detail": 2,
+              "name": "Влажность в спальне"
+            }
+          ]
+        }
+      ],
+      "title": "Весь дом"
+    }
+  }
+}
