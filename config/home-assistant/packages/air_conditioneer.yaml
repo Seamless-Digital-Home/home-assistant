@@ -1,0 +1,194 @@
+air_conditioneer:
+
+  input_button:
+
+    ac_led:
+      name: Изменить режим подсветки
+      icon: mdi:fullscreen
+
+  automation:
+    - alias: AC Power
+      id: 'ac_on_off_power'
+      description: "Включает/выключает кондиционер по изменению input_boolean.ac_power, 
+      устанавливая необходимую температуру и состояние экрана"
+      trigger:
+      - platform: state
+        entity_id: input_boolean.ac_power
+      action:
+      - choose:
+        - conditions:
+          - condition: state
+            state: "on"
+            entity_id: input_boolean.ac_power
+          sequence:
+          - service: mqtt.publish
+            data:
+              payload: "{\"send_key\": { \"id\": 3, \"key_code\": {{ states('input_number.ac_temp') | int }}}}"
+              topic: zigbee2mqtt/ircontrol/set
+              retain: true
+        default:
+        - service: mqtt.publish
+          data:
+            payload: "{\"send_key\": { \"id\": 3, \"key_code\": 2}}"
+            topic: zigbee2mqtt/ircontrol/set
+            retain: true
+      - choose:
+        - conditions:
+          - condition: state
+            state: "off"
+            entity_id: input_boolean.ac_led
+          sequence:
+          - service: mqtt.publish
+            data:
+              payload: "{\"send_key\": { \"id\": 3, \"key_code\": 5}}"
+              topic: zigbee2mqtt/ircontrol/set
+              retain: true
+
+    - alias: AC Led
+      id: 'ac_led_ctl'
+      description: "При изменении input_boolean.ac_led меняет статус подсветки экрана температуры"
+      trigger:
+      - platform: state
+        entity_id: input_boolean.ac_led
+      action:
+      - choose:
+        - conditions:
+          - condition: state
+            state: "on"
+            entity_id: input_boolean.ac_power
+          sequence:
+          - service: mqtt.publish
+            data:
+              payload: "{\"send_key\": { \"id\": 3, \"key_code\": 5}}"
+              topic: zigbee2mqtt/ircontrol/set
+              retain: true
+
+    - alias: AC Swing
+      id: 'ac_swing_ctl'
+      description: "При нажатии на input_button.ac_swing изменяет состояние шторки 
+      (движение или фиксированно)"
+      trigger:
+      - platform: state
+        entity_id: input_button.ac_swing
+      action:
+      - service: mqtt.publish
+        data:
+          payload: "{\"send_key\": { \"id\": 3, \"key_code\": 10}}"
+          topic: zigbee2mqtt/ircontrol/set
+          retain: true
+
+    - alias: AC Temperature
+      id: 'ac_temperature'
+      description: "При изменении значения input_number.ac_temp 
+      устанавливает соответствующую температуру"
+      trigger:
+      - platform: state
+        entity_id: input_number.ac_temp
+      action:
+        - choose:
+          - conditions:
+            - condition: state
+              state: "on"
+              entity_id: input_boolean.ac_power
+            sequence:
+            - service: mqtt.publish
+              data:
+                payload: "{\"send_key\": { \"id\": 3, \"key_code\": {{ states('input_number.ac_temp') | int }}}}"
+                topic: zigbee2mqtt/ircontrol/set
+                retain: true
+
+    - alias: AC Temperature Climate Sync
+      id: 'ac_temp_climate_sync'
+      description: "При изменении температуры термостата климата, устанавливает 
+      температуру на кондиционере как ОКРУГЛВВЕРХ(температура)"
+      trigger:
+      - platform: state
+        entity_id: climate.split_sistema
+      condition:
+      - condition: template
+        value_template: >
+          {{ state_attr('climate.split_sistema', 'temperature') != states('input_number.ac_temp') }}
+      action:
+      - service: input_number.set_value
+        data_template:
+          entity_id: input_number.ac_temp
+          value: "{{ state_attr('climate.split_sistema', 'temperature') | float | round}}"
+
+    - alias: AC Door check
+      id: 'ac_door_check'
+      description: "Раз в 5 минут проверяет состояние кондиционера и дверей и, если 
+      какая-то дверь открыта при работающем кондиционере, присылает уведомление в 
+      телегу и на Алис, включает алерт-свет в спальне"
+      trigger:
+      - platform: time_pattern
+        minutes: /5
+      condition:
+      - condition: state
+        state: "on"
+        entity_id: input_boolean.ac_power
+      - condition: state
+        state: "on"
+        match: "any"
+        entity_id:
+        - binary_sensor.door_balcony_contact
+        - binary_sensor.door_bedroom_contact
+      action:
+      - choose:
+        - conditions:
+          - condition: state
+            state: "on"
+            entity_id: binary_sensor.door_balcony_contact
+          - condition: state
+            state: "off"
+            entity_id: binary_sensor.door_bedroom_contact
+          sequence:
+          - service: notify.tg_chat
+            data:
+              title: "*Работает кондиционер!*"
+              message: "Закройте дверь на балкон"
+          - service: notify.alice_alert
+            data:
+              message: 'Работает кондиционер и открыта дверь на балкон!'
+          - service: script.turn_on
+            data:
+              entity_id: script.alert_bedroom_red
+        - conditions:
+          - condition: state
+            state: "on"
+            entity_id: binary_sensor.door_bedroom_contact
+          - condition: state
+            state: "off"
+            entity_id: binary_sensor.door_balcony_contact
+          sequence:
+          - service: notify.tg_chat
+            data:
+              title: "*Работает кондиционер!*"
+              message: "Закройте дверь в комнату"
+          - service: notify.alice_alert
+            data:
+              message: 'Работает кондиционер и открыта дверь в комнату!'
+          - service: script.turn_on
+            data:
+              entity_id: script.alert_bedroom_red
+
+        default:
+        - service: notify.tg_chat
+          data:
+            title: "*Работает кондиционер!*"
+            message: "Закройте дверь в комнату и на балкон"
+        - service: notify.alice_alert
+          data:
+            message: "Работает кондиционер и открыты двери!"
+        - service: script.turn_on
+          data:
+            entity_id: script.alert_bedroom_red
+
+    - alias: AC led button pressed
+      id: 'ac_led_btn_pressed'
+      description: "При нажатии на кнопку input_button.ac_led меняет состояние подсветки экрана"
+      trigger:
+      - platform: state
+        entity_id: input_button.ac_led
+      action:
+      - service: input_boolean.toggle
+        entity_id: input_boolean.ac_led

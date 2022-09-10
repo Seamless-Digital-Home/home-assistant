@@ -1,0 +1,36 @@
+pult:
+  automation:
+    - alias: pult_1_double
+      description: 'При нажатии на кнопку 1 дважды изменяет состояние мониторов'
+      trigger:
+      - platform: state
+        entity_id: sensor.pult_action
+        to: 1_double
+      action:
+        - service: switch.toggle
+          target:
+            entity_id:
+              - switch.table_l4
+              - switch.table_l3
+
+    - alias: pult_3_single
+      description: 'При нажатии на кнопку 2 изменяет состояние люстры'
+      trigger:
+      - platform: state
+        entity_id: sensor.pult_action
+        to: 2_single
+      action:
+        - service: light.toggle
+          target:
+            entity_id: light.chandelier_bedroom
+
+    - alias: pult_2_double
+      description: 'При нажатии на кнопку 2 дважды изменяет состояние прикроватного света'
+      trigger:
+      - platform: state
+        entity_id: sensor.pult_action
+        to: 2_double
+      action:
+        - service: light.toggle
+          target:
+            entity_id: light.bedside

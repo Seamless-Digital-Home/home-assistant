@@ -1,0 +1,9 @@
+- name: turn_off_bedside_lamp
+  entities:
+    light.yeelight_colorb_0x1b11063d: "off" # left
+    light.yeelight_colorb_0x1b11549f: "off" # right
+
+- name: turn_on_bedside_lamp
+  entities:
+    light.yeelight_colorb_0x1b11063d: "on" # left
+    light.yeelight_colorb_0x1b11549f: "on" # right

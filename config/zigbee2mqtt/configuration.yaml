@@ -1,0 +1,146 @@
+homeassistant: true
+permit_join: false
+frontend:
+  port: 84
+  url: null
+mqtt:
+  base_topic: zigbee2mqtt
+  server: mqtt://localhost
+serial:
+  port: /dev/ttyZigbee
+advanced:
+  channel: 25
+  homeassistant_legacy_entity_attributes: false
+  legacy_api: false
+  legacy_availability_payload: false
+  log_syslog:
+    app_name: Zigbee2MQTT
+    eol: /n
+    host: localhost
+    localhost: localhost
+    path: /dev/log
+    pid: process.pid
+    port: 123
+    protocol: tcp4
+    type: '5424'
+  last_seen: ISO_8601
+  elapsed: true
+device_options:
+  legacy: false
+devices:
+  '0x00158d00077dcbaf':
+    friendly_name: ws_bathroom
+    description: Сенсор протечки в ванной
+  '0x54ef4410000f5c32':
+    friendly_name: switch_toilet
+    description: Выключатель у туалета
+  '0x00158d0006e47d79':
+    friendly_name: ms_toilet
+    description: Датчик движения и освещенности в туалете
+  '0x00158d0006bebabd':
+    friendly_name: ms_kitchen
+    description: Датчик движения и освещенности в кухне
+  '0x00158d0006ed1ec3':
+    friendly_name: ms_bathroom
+    description: Датчик движения и освещенности в ванной
+  '0x00158d0006ebbdc4':
+    friendly_name: ms_hall_door
+    description: Датчик движения и освещенности в коридоре над входной дверью
+  '0x54ef441000257a7f':
+    friendly_name: switch_bathroom
+    description: Выключатель у ванной
+  '0x000d6f0014f34a43':
+    friendly_name: scene_switcher
+    description: Пульт сцен
+  '0x000d6f0014f33ff4':
+    friendly_name: ircontrol
+    description: ИК шайба
+  '0x00158d0006b7acee':
+    friendly_name: ms_bedroom
+    description: Датчик движения и освещенности в спальне
+  '0x00158d0006af40ff':
+    friendly_name: ms_hall
+    description: Датчик движения и освещенности в коридоре
+  '0xa4c13879f2b0e91c':
+    friendly_name: light_hall
+    description: Лампочка в коридоре
+  '0x60a423fffef8a60a':
+    friendly_name: switch_kitchen
+    description: Выключатель света в кухне
+  '0x00158d0006b1d562':
+    friendly_name: ms_bathroom_door
+    description: Датчик движения и освещенности над дверью в ванной
+  '0x54ef4410001c82cc':
+    friendly_name: switch_hall
+    description: Выключатель в коридоре (у двери)
+  '0xa4c1381fc415a669':
+    friendly_name: washer_socket
+    description: Розетка для стиральной машины
+  '0xa4c138130a984e0b':
+    friendly_name: bathroom
+    description: Датчик температуры и влажности в ванной
+  '0x00158d0006a155a1':
+    friendly_name: ms_outside
+    description: Датчик движения и освещенности над входной дверью в подъезде
+  '0x2c1165fffe661ab2':
+    friendly_name: table
+    description: Розетки для стола
+    homeassistant: {}
+    legacy: false
+    optimistic: true
+    qos: 1
+  '0xa4c1382bcba838c2':
+    friendly_name: relay_kitchen
+    description: Реле на кухне для управления подсветкой
+  '0x00158d0000beb002':
+    friendly_name: door_main
+    description: Датчик открытия на входной двери
+  '0x00158d0000b582cd':
+    friendly_name: door_balcony
+    description: Датчик открытия двери на балкон
+  '0x00158d0000b3ac4b':
+    friendly_name: door_toilet
+    description: Датчик открытия двери в туалет
+  '0x00158d0000beaf77':
+    friendly_name: door_bedroom
+    description: Датчик открытия двери в спальне
+  '0xa4c138de3474e61f':
+    friendly_name: kitchen
+    description: Датчик температуры и влажности в кухне
+  '0xa4c138047891354e':
+    friendly_name: pult
+    description: >-
+      Пульт с четырьмя кнопками в комнате, можно программировать X_single,
+      X_double, X_long
+  '0x00124b00245533db':
+    friendly_name: button_kitchen
+  '0x54ef4410002757e1':
+    friendly_name: switch_bedroom
+    description: Выключатель в спальне
+  '0x54ef441000256d11':
+    friendly_name: switch_balcony
+    description: Выключатель света на балконе
+  '0x00158d0000b658b1':
+    friendly_name: ws_toilet
+    description: Сенсор протечки в туалете
+  '0x00158d0000b55c84':
+    friendly_name: ws_kitchen
+    description: Датчик протечки воды на кухне
+  '0x00158d0000b68f7a':
+    friendly_name: ws_bedroom
+    description: Датчик протечки в спальне
+  '0xa4c13898989402ff':
+    friendly_name: ls_toilet
+    description: Светодиодная лента в туалете
+    transition: 0
+  '0xa4c13818ae4c4b41':
+    friendly_name: ws_bedroom_heating_battery
+    description: Датчик утечки воды под батареей в спальне
+  '0x00124b0024cac4ca':
+    friendly_name: switch_table_global
+    description: Выключает розетку стола и зарядку телефона
+availability:
+  active:
+    timeout: 10
+  passive:
+    timeout: 300

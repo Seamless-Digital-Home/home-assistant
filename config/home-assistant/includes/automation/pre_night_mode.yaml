@@ -1,0 +1,41 @@
+- alias: Pre night mode on
+  description: 'Режим подготовки ко сну: выключает верхний свет, включает прикроватный свет'
+  trigger:
+  - platform: state
+    entity_id: sensor.scene_switcher_action
+    to: cinema
+  condition:
+    condition: and
+    conditions:
+        - condition: state
+          state: "off"
+          entity_id: input_boolean.pre_night_mode
+  action:
+  - service: light.turn_on
+    entity_id: light.bedside
+  - service: light.turn_off
+    entity_id: light.chandelier_bedroom
+  - service: input_boolean.turn_on
+    entity_id: input_boolean.pre_night_mode
+  - service: input_boolean.turn_off
+    entity_id: input_boolean.night_mode
+
+- alias: Pre night mode off
+  description: 'Режим подготовки ко сну выключается: включает верхний свет, выключает прикроватный свет'
+  trigger:
+  - platform: state
+    entity_id: sensor.scene_switcher_action
+    to: cinema
+  condition:
+    condition: and
+    conditions:
+        - condition: state
+          state: "on"
+          entity_id: input_boolean.pre_night_mode
+  action:
+  - service: light.turn_off
+    entity_id: light.bedside
+  - service: light.turn_on
+    entity_id: light.chandelier_bedroom
+  - service: input_boolean.turn_off
+    entity_id: input_boolean.pre_night_mode

@@ -1,0 +1,15 @@
+- alias: Low battery level detection & notification for all battery sensors
+  description: ""
+  use_blueprint:
+    path: sbyx/low-battery-level-detection-notification-for-all-battery-sensors.yaml
+    input:
+      exclude:
+        entity_id:
+          - sensor.device_iphone_nastya_battery_level
+          - sensor.ipad_simple_battery_level
+          - sensor.iphone_45_battery_level
+          - sensor.macbook_pro_overfl0w_internal_battery_level
+      actions:
+        - service: notify.tg_chat
+          data:
+            message: "Низкий уровень батареи: {{sensors}}"

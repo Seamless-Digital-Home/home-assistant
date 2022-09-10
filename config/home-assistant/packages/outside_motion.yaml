@@ -1,0 +1,101 @@
+outside_motion:
+
+  input_boolean:
+
+    stop_notifying_motion_door:
+      name: Не отправлять уведомление об окончании движения у двери
+
+  input_number:
+
+    motion_start_chat_id:
+      name: 'id чата куда было отправлено сообщение о том, что началось движение'
+      min: -1000000000000000000
+      max: 1000000000000000000
+      initial: 0
+
+    motion_start_message_id:
+      name: 'id сообщения о том, что началось движение'
+      min: -1000000000000000000
+      max: 1000000000000000000
+      initial: 0
+
+  automation:
+
+    - alias: outside_motion_notify
+      description: 'Говорит, что кто-то подошел к двери'
+      trigger:
+      - platform: state
+        from: "off"
+        to: "on"
+        entity_id: binary_sensor.ms_outside_occupancy
+      action:
+        - choose:
+            - conditions:
+                - condition: state
+                  entity_id: input_boolean.stop_notifying_motion_door
+                  state: "off"
+              sequence:
+                - service: notify.tg_chat
+                  data:
+                    title: "*Движение у двери*"
+                    message: "Обнаружено движение"
+                    data:
+                      message_tag: 'motion_start'
+      mode: single
+
+    - alias: outside_motion_end_notify
+      description: 'Говорит, что движение у двери прекратилось'
+      trigger:
+      - platform: state
+        from: "on"
+        to: "off"
+        entity_id: binary_sensor.ms_outside_occupancy
+      action:
+        - choose:
+            - conditions:
+                - condition: state
+                  entity_id: input_boolean.stop_notifying_motion_door
+                  state: "on"
+              sequence:
+                - service: input_boolean.turn_off
+                  target:
+                      entity_id: input_boolean.stop_notifying_motion_door
+          default:
+            - service: notify.tg_chat
+              data:
+                title: "*Движение у двери*"
+                message: "Движение прекратилось"
+      mode: single
+
+    - alias: 'Открытие входной двери, отключение уведомления о движении'
+      description: 'Открылась дверь, stop_notifying_motion_door=on'
+      trigger:
+      - platform: state
+        from: "off"
+        to: "on"
+        entity_id: binary_sensor.door_main_contact
+      action:
+        - service: input_boolean.turn_on
+          target:
+              entity_id: input_boolean.stop_notifying_motion_door
+        - service: telegram_bot.delete_message
+          data:
+            chat_id: "{{ states('input_number.motion_start_chat_id') }}"
+            message_id: "{{ states('input_number.motion_start_message_id') }}"
+      mode: single
+
+    - alias: 'Запись информации о сообщении motion_start'
+      trigger:
+        platform: event
+        event_type: telegram_sent
+        event_data:
+          message_tag: "motion_start"
+      action:
+        - service: input_number.set_value
+          data_template:
+            entity_id: input_number.motion_start_chat_id
+            value: "{{ trigger.event.data.chat_id }}"
+        - service: input_number.set_value
+          data_template:
+            entity_id: input_number.motion_start_message_id
+            value: "{{ trigger.event.data.message_id }}"

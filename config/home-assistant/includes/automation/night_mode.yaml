@@ -1,0 +1,38 @@
+- alias: Enable night mode
+  description: 'Режим сна: выключает верхний свет, выключает прикроватный свет'
+  trigger:
+  - platform: state
+    entity_id: sensor.scene_switcher_action
+    to: sleep
+  condition:
+    condition: and
+    conditions:
+        - condition: state
+          state: "off"
+          entity_id: input_boolean.night_mode
+  action:
+  - service: light.turn_off
+    entity_id: light.bedside
+  - service: light.turn_off
+    entity_id: light.chandelier_bedroom
+  - service: input_boolean.turn_on
+    entity_id: input_boolean.night_mode
+  - service: input_boolean.turn_off
+    entity_id: input_boolean.pre_night_mode
+
+- alias: Disable night mode
+  description: 'Режим сна выкл: ...'
+  trigger:
+  - platform: state
+    entity_id: sensor.scene_switcher_action
+    to: sleep
+  condition:
+    condition: and
+    conditions:
+        - condition: state
+          state: "on"
+          entity_id: input_boolean.night_mode
+  action:
+  - service: input_boolean.turn_off
+    target:
+      entity_id: input_boolean.night_mode

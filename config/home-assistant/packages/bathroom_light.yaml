@@ -1,0 +1,73 @@
+bathroom_light:
+
+  binary_sensor:
+
+  - platform: template
+    sensors:
+      bathroom_motion:
+        friendly_name: "Движение в ванной"
+        device_class: motion
+        value_template: >-
+          {{ is_state('binary_sensor.ms_bathroom_occupancy', 'on')  
+            or is_state('binary_sensor.ms_bathroom_door_occupancy', 'on') }}
+  timer:
+
+    bathroom_light_off:
+      name: Выключение через
+      duration: '00:08:00'
+      restore: true
+
+  automation:
+
+    - alias: Light - Bathroom - On by motion
+      trigger:
+      - platform: state
+        entity_id: binary_sensor.bathroom_motion
+        from: 'off'
+        to: 'on'
+      condition:
+      - condition: time
+        after: '08:00:00'
+        before: '00:00:00'
+      action:
+      - service: light.turn_on
+        entity_id: light.bathroom
+      - service: timer.start
+        entity_id: timer.bathroom_light_off
+
+    - alias: Light - Bathroom - Off / Schedule off
+      trigger:
+      - platform: event
+        event_type: timer.finished
+        event_data:
+          entity_id: timer.bathroom_light_off
+      action:
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: binary_sensor.bathroom_motion
+                state: 'on'
+            sequence:
+              - service: timer.start
+                entity_id: timer.bathroom_light_off
+        default:
+          - service: light.turn_off
+            entity_id: light.bathroom
+
+    - alias: Light - Bathroom - On/Off by button
+      trigger:
+      - platform: state
+        entity_id: sensor.switch_bathroom_action
+        to: single_right
+      action:
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: light.bathroom
+                state: 'on'
+            sequence:
+              - service: timer.cancel
+                entity_id: timer.bathroom_light_off
+        default:
+          - service: timer.start
+            entity_id: timer.bathroom_light_off

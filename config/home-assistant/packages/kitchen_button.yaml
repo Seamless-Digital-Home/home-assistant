@@ -1,0 +1,39 @@
+kitchen_button:
+  automation:
+    - alias: Kitchen - Button
+      id: "ktchn_btn"
+      description: >
+        Одинарное нажатие изменяет состояние подсветки кухни.
+        Двойное нажатие изменяет состояние света в кухне.
+        Долгое нажатие изменяет состояние ночника.
+      trigger:
+      - platform: state
+        entity_id: sensor.button_kitchen_action
+      action:
+      - choose:
+        - conditions:
+          - condition: template
+            value_template: "{{ trigger.to_state.state == \"single\" }}"
+          sequence:
+          - service: light.toggle
+            target:
+              entity_id:
+                - light.led_strip
+        - conditions:
+          - condition: template
+            value_template: "{{ trigger.to_state.state == \"double\" }}"
+          sequence:
+          - service: light.toggle
+            target:
+              entity_id:
+                - light.chandelier_kitchen
+        - conditions:
+          - condition: template
+            value_template: "{{ trigger.to_state.state == \"long\" }}"
+          sequence:
+          - service: light.turn_off
+            target:
+              entity_id:
+                - light.hub
+                - light.chandelier_kitchen
+                - light.led_strip

@@ -1,0 +1,211 @@
+toilet_light:
+  timer:
+
+      toilet_light_off:
+        name: Выключение через
+        duration: '00:08:00'
+        restore: true
+
+  input_boolean:
+
+    toilet_light_combo:
+      name: "Свет в туалете"
+
+  automation:
+
+    - alias: Light - Toilet - toilet_light_combo - On
+      trigger:
+      - platform: state
+        entity_id: input_boolean.toilet_light_combo
+        from: "off"
+        to: "on"
+      condition:
+      - condition: state
+        entity_id: light.toilet
+        state:
+        - "off"
+        - "unavailable"
+      - condition: state
+        entity_id: light.ls_toilet
+        state:
+        - "off"
+        - "unavailable"
+      action:
+      - choose:
+          - conditions:
+              - condition: time
+                after: '22:30:00'
+                before: '09:00:00'
+              - condition: state
+                entity_id: light.ls_toilet
+                state: "off"
+            sequence:
+              - service: light.turn_on
+                entity_id: light.ls_toilet
+        default:
+          - service: light.turn_on
+            entity_id: light.toilet
+      - service: timer.start
+        entity_id: timer.toilet_light_off
+
+    - alias: Light - Toilet - toilet_light_combo - Off
+      trigger:
+      - platform: state
+        entity_id: input_boolean.toilet_light_combo
+        from: "on"
+        to: "off"
+      action:
+      - service: light.turn_off
+        entity_id: light.toilet
+      - service: light.turn_off
+        entity_id: light.ls_toilet
+      - service: timer.cancel
+        entity_id: timer.toilet_light_off
+
+    - alias: Light - Toilet - toilet_light_combo - Sync
+      trigger:
+      - platform: state
+        entity_id: light.toilet
+      - platform: state
+        entity_id: light.ls_toilet
+      action:
+      - choose:
+          - conditions:
+            - or:
+              - condition: state
+                entity_id: light.toilet
+                state: "on"
+              - condition: state
+                entity_id: light.ls_toilet
+                state: "on"
+            - condition: state
+              entity_id: input_boolean.toilet_light_combo
+              state: "off"
+            sequence:
+              - service: input_boolean.turn_on
+                entity_id: input_boolean.toilet_light_combo
+          - conditions:
+            - condition: state
+              entity_id: light.toilet
+              state: "off"
+            - condition: state
+              entity_id: light.ls_toilet
+              state: "off"
+            - condition: state
+              entity_id: input_boolean.toilet_light_combo
+              state: "on"
+            sequence:
+              - service: input_boolean.turn_off
+                entity_id: input_boolean.toilet_light_combo
+
+    - alias: Light - Toilet - On by motion
+      trigger:
+      - platform: state
+        entity_id: binary_sensor.ms_toilet_occupancy
+        from: "off"
+        to: "on"
+      action:
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.toilet_light_combo
+
+    - alias: Light - Toilet - Off by door
+      trigger:
+      - platform: state
+        entity_id: binary_sensor.door_toilet_contact
+        from: "off"
+        to: "on"
+      action:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.toilet_light_combo
+
+    - alias: Light - Toilet - Off / Schedule off
+      trigger:
+      - platform: event
+        event_type: timer.finished
+        event_data:
+          entity_id: timer.toilet_light_off
+      action:
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: binary_sensor.ms_toilet_occupancy
+                state: "on"
+            sequence:
+              - service: timer.start
+                entity_id: timer.toilet_light_off
+        default:
+          - service: input_boolean.turn_off
+            entity_id: input_boolean.toilet_light_combo
+
+    - alias: Light - Toilet - On/Off by button - Auto
+      trigger:
+      - platform: state
+        entity_id: sensor.switch_toilet_action
+        to: single_left
+      condition:
+      - condition: time
+        after: "22:30:00"
+        before: "09:00:00"
+      action:
+      - service: input_boolean.toggle
+        entity_id: input_boolean.toilet_light_combo
+
+    - alias: Light - Toilet - On/Off by button - Big
+      trigger:
+      - platform: state
+        entity_id: sensor.switch_toilet_action
+        to: double_left
+      action:
+      - service: light.toggle
+        entity_id: light.toilet
+
+    - alias: Led strip - Toilet - Fixer
+      trigger:
+      - seconds: /30
+        platform: time_pattern
+      condition:
+      - condition: state
+        entity_id: light.ls_toilet
+        state: "off"
+      action:
+      - service: mqtt.publish
+        data:
+          payload: "{\"state\": \"off\"}"
+          topic: zigbee2mqtt/ls_toilet/set
+          retain: true
+
+    - alias: Toilet - Control mode - set control_relay
+      trigger:
+      - platform: time
+        at: "09:00:01"
+      - platform: state
+        entity_id: select.switch_toilet_operation_mode_left
+        to: "decoupled"
+      condition:
+      - condition: time
+        after: "09:00:00"
+        before: "22:30:00"
+      action:
+      - service: select.select_option
+        data:
+          option: control_relay
+        target:
+          entity_id: select.switch_toilet_operation_mode_left
+
+    - alias: Toilet - Control mode - set decoupled
+      trigger:
+      - platform: time
+        at: "22:30:01"
+      - platform: state
+        entity_id: select.switch_toilet_operation_mode_left
+        to: "control_relay"
+      condition:
+      - condition: time
+        after: "22:30:00"
+        before: "09:00:00"
+      action:
+      - service: select.select_option
+        data:
+          option: decoupled
+        target:
+          entity_id: select.switch_toilet_operation_mode_left

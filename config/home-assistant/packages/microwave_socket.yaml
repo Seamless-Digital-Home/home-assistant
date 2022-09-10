@@ -1,0 +1,22 @@
+microwave_socket:
+  automation:
+    - alias: Microwave - Off by time
+      trigger:
+      - platform: time
+        at: '02:00:00'
+      action:
+      - service: switch.turn_off
+        entity_id: switch.kitchen
+    - alias: Microwave - On by motion and time
+      trigger:
+      - platform: state
+        entity_id: binary_sensor.ms_kitchen_occupancy
+        from: "off"
+        to: "on"
+      condition:
+      - condition: time
+        after: '07:00:00'
+        before: '15:00:00'
+      action:
+      - service: switch.turn_on
+        entity_id: switch.kitchen

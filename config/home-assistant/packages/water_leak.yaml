@@ -1,0 +1,110 @@
+water_leak_bedroom:
+
+  timer:
+
+      water_leak_say:
+        name: Следующее объявление о протечке
+        duration: '00:00:05'
+        restore: true
+
+  input_text:
+
+    water_leak_friendly_name:
+      name: Имя датчика, по которому сработала протечка
+      initial: Неизвестно
+
+  automation:
+
+    - alias: Water leak sensor unavailable
+      trigger:
+      - platform: state
+        to: "unavailable"
+        entity_id: &water_entities
+        - binary_sensor.ws_bedroom_water_leak
+        - binary_sensor.ws_bathroom_water_leak
+        - binary_sensor.ws_bedroom_heating_battery_water_leak
+        - binary_sensor.ws_kitchen_water_leak
+        - binary_sensor.ws_toilet_water_leak
+      action:
+      - service: notify.tg_chat
+        data:
+          title: "*Датчик протечки | {{ trigger.to_state.attributes.friendly_name }}*"
+          message: "Оффлайн"
+      mode: single
+
+    - alias: Water leak sensor available
+      trigger:
+      - platform: state
+        from: "unavailable"
+        entity_id: *water_entities
+      action:
+      - service: notify.tg_chat
+        data:
+          title: "*Датчик протечки | {{ trigger.to_state.attributes.friendly_name }}*"
+          message: "В сети"
+      mode: single
+
+    - alias: Water leak
+      trigger:
+      - platform: state
+        from: "off"
+        to: "on"
+        entity_id: *water_entities
+      action:
+      - service: input_text.set_value
+        entity_id: input_text.water_leak_friendly_name
+        data:
+          value: "{{ trigger.to_state.attributes.friendly_name }}"
+      - service: timer.start
+        entity_id: timer.water_leak_say
+      mode: single
+
+    - alias: Water leak fixed
+      trigger:
+      - platform: state
+        from: "on"
+        to: "off"
+        entity_id: *water_entities
+      action:
+      - service: notify.tg_chat
+        data:
+          title: "*Датчик протечки | {{ trigger.to_state.attributes.friendly_name }}*"
+          message: "Сухо"
+      - service: notify.alice_alert
+        data:
+          message: "Утечка воды {{ trigger.to_state.attributes.friendly_name }} устранена"
+      mode: single
+
+    - alias:  Water leak timer continue
+      trigger:
+      - platform: event
+        event_type: timer.finished
+        event_data:
+          entity_id: timer.water_leak_say
+      condition:
+      - condition: state
+        state: "on"
+        match: any
+        entity_id: *water_entities
+      action:
+      - service: timer.start
+        entity_id: timer.water_leak_say
+
+    - alias: Water leak notification
+      trigger:
+      - platform: event
+        event_type: timer.started
+        event_data:
+          entity_id: timer.water_leak_say
+      action:
+      - service: notify.alice_alert
+        data:
+          message: "Обнаружена утечка воды {{ states('input_text.water_leak_friendly_name') }}"
+      - service: notify.tg_chat
+        data:
+          title: "*Датчик протечки | {{ states('input_text.water_leak_friendly_name') }}*"
+          message: "Обнаружена протечка воды"
+      - service: script.turn_on
+        data:
+          entity_id:
+            - script.alert_bedroom_red

@@ -1,0 +1,111 @@
+humidifier:
+  fan:
+    - platform: xiaomi_miio_airpurifier
+      host: 192.168.1.5
+      token: !secret humidifier_token
+      name: Humidifier
+
+  sensor:
+    - platform: template
+      sensors:
+        humidifier_temperature:
+          friendly_name: Humidifier temperature
+          value_template: '{{ states.fan.humidifier.attributes.temperature }}'
+          unit_of_measurement: '°C'
+          icon_template: mdi:thermometer
+          
+        humidifier_humidity:
+          friendly_name: Humidifier humidity
+          value_template: '{{ states.fan.humidifier.attributes.humidity }}'
+          unit_of_measurement: '%'
+          icon_template: mdi:water-percent
+          
+        humidifier_water_level:
+          friendly_name: Humidifier water level
+          value_template: '{{ states.fan.humidifier.attributes.water_level }}'
+          unit_of_measurement: '%'
+          icon_template: mdi:waves
+
+  switch:
+    - platform: template
+      switches:
+        xiaomi_humidifier_child_lock:
+          friendly_name: "Child lock"
+          value_template: "{{ is_state_attr('fan.humidifier', 'child_lock', True) }}"
+          turn_on:
+            service: xiaomi_miio_airpurifier.fan_set_child_lock_on
+            data:
+              entity_id: fan.humidifier
+          turn_off:
+            service: xiaomi_miio_airpurifier.fan_set_child_lock_off
+            data:
+              entity_id: fan.humidifier
+          icon_template: "mdi:lock-outline"
+          
+        xiaomi_humidifier_buzzer:
+          friendly_name: "Buzzer"
+          value_template: "{{ is_state_attr('fan.humidifier', 'buzzer', True) }}"
+          turn_on:
+            service: xiaomi_miio_airpurifier.fan_set_buzzer_on
+            data:
+              entity_id: fan.humidifier
+          turn_off:
+            service: xiaomi_miio_airpurifier.fan_set_buzzer_off
+            data:
+              entity_id: fan.humidifier
+          icon_template: "mdi:volume-off"
+          
+        xiaomi_humidifier_dry:
+          friendly_name: "Dry"
+          value_template: "{{ is_state_attr('fan.humidifier', 'dry', True) }}"
+          turn_on:
+            service: xiaomi_miio_airpurifier.fan_set_dry_on
+            data:
+              entity_id: fan.humidifier
+          turn_off:
+            service: xiaomi_miio_airpurifier.fan_set_dry_off
+            data:
+              entity_id: fan.humidifier
+          icon_template: "mdi:hair-dryer"
+
+  automation:
+
+  # Выключить увлажнитель
+    - alias: Humidifier turn off when humidity >60%
+      initial_state: true
+      trigger:
+        - platform: numeric_state # Влажность в комнате больше 60
+          entity_id: sensor.humidifier_humidity
+          above: 60
+      action:
+        - service: fan.turn_off
+          data:
+            entity_id: fan.humidifier
+
+  # Включить увлажнитель на максимальную скорость если влажность в комнате меньше 45
+    - alias: Humidifier turn on when humidity <45%
+      initial_state: true
+      trigger:
+        - platform: numeric_state # Влажность в комнате меньше 45
+          entity_id: sensor.humidifier_humidity
+          below: 45
+      action:
+        - service: fan.turn_on
+          data:
+            entity_id: fan.humidifier
+        - delay: '00:00:05'
+        - service: fan.set_speed
+          data:
+            entity_id: fan.humidifier
+            speed: Auto
+
+    - alias: Humidifier water level <10%
+      initial_state: true
+      trigger:
+        - platform: template
+          value_template: "{{ state_attr('fan.humidifier','water_level')|float < 10 and states('fan.humidifier') in ['on', 'off'] }}"
+      action:
+        - service: notify.tg_chat
+          data:
+            title: "Добавьте воды в увлажнитель"
+            message: "Осталось {{ state_attr('fan.humidifier','water_level')|int }}%"

@@ -1,0 +1,116 @@
+
+# Loads default set of integrations. Do not remove.
+default_config:
+
+# Text to speech
+tts:
+  - platform: google_translate
+
+frontend:
+  themes: !include_dir_merge_named themes
+
+automation: !include_dir_merge_list includes/automation
+script: !include_dir_merge_named includes/script
+scene: !include_dir_merge_list includes/scene
+homeassistant:
+  packages: !include_dir_merge_named packages
+tuya:
+  username: !secret tuya_username
+  password: !secret tuya_password  
+  country_code: 7
+  platform: smart_life
+home_connect:
+  client_id: !secret home_connect_client_id
+  client_secret: !secret home_connect_client_secret
+yandex_station:
+  media_source:
+    - title: Произнеси текст
+      media_content_type: text
+      thumbnail: https://brands.home-assistant.io/_/tts/icon.png
+    - title: Выполни команду
+      media_content_type: command
+      thumbnail: https://brands.home-assistant.io/_/automation/icon.png
+    - title: Включи любимое
+      media_content_id: Включи моё любимое вперемешку
+      media_content_type: command
+    - title: Произнеси шепотом 
+      template: '<speaker is_whisper="true">{{ message }}'
+      media_content_type: dialog
+      extra:
+        volume_level: 0.2
+    - title: Статус эквалайзера
+      template: 'Эквалайзер установлен на {{ states("select.yandex_station_equalizer") }}'
+      media_content_type: text
+binary_sensor: !include_dir_merge_list includes/bin_sensor
+conversation:
+  intents:
+    media_player.yandex_station_ff98f0291f3926729fa5a7ec: [.+]
+notify:
+  - name: alice_alert
+    platform: yandex_station
+    data:
+      entity_id:
+      - media_player.yandex_station_ff98f0291f3926729fa5a7ec
+      - media_player.ys_lite
+      media_content_id: >-
+        {% if title is defined %}<speaker effect="megaphone">{{ title }}<speaker effect="-"> sil <[200]>{% endif %}{{ message }}
+      media_content_type: dialog
+  - platform: telegram
+    name: tg_andrey
+    chat_id: !secret tg_andrey_chat_id
+  - platform: telegram
+    name: tg_chat
+    chat_id: !secret tg_group_chat_id
+device_tracker:
+  - platform: bluetooth_tracker
+    new_device_defaults:
+      track_new_devices: true
+  - platform: iphonedetect
+    consider_home: 60
+    new_device_defaults:
+      track_new_devices: true
+    hosts:
+      iphone_andrey: 192.168.1.22
+      iphone_nastya: 192.168.1.18
+telegram_bot:
+  - platform: polling
+    api_key: !secret tg_api_key
+    allowed_chat_ids:
+      - !secret tg_group_chat_id
+      - !secret tg_andrey_chat_id
+http:
+  use_x_forwarded_for: true
+  trusted_proxies: 172.21.0.2
+  ip_ban_enabled: true
+  login_attempts_threshold: 15
+pyscript:
+  allow_all_imports: true
+  hass_is_global: true
+
+climate:
+  - platform: generic_thermostat
+    name: Сплит система
+    unique_id: "split_system"
+    heater: input_boolean.ac_power
+    target_sensor: sensor.humidifier_temperature
+    min_temp: 17
+    max_temp: 29
+    target_temp: 27
+    away_temp: 17
+    comfort_temp: 26
+    home_temp: 26
+    sleep_temp: 27
+    activity_temp: 25
+    precision: 0.5
+    target_temp_step: 0.5
+calendar:
+  - platform: todoist
+    token: !secret todoist_token
+yandex_smart_home:
+  notifier:
+  # Если в диалоге авторизовано несколько пользователей Home Assistant или
+  # к одному Home Assistant подключено несколько навыков - на каждое сочетание
+  # диалог/пользователь_HA нужно добавить отдельные записи:
+  - oauth_token: !secret yandex_oauth_token  # запрашивается с аккаунта владельца диалога, в котором авторизован user_id
+    skill_id: !secret yandex_skill_id
+    user_id: !secret yandex_user_id

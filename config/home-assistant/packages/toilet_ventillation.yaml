@@ -1,0 +1,82 @@
+toilet_ventillation:
+  input_boolean:
+    manual_vent_toilet:
+      name: Ручное включение вентиляции
+      icon: mdi:fan
+      
+  input_button:
+    manual_vent_toilet:
+      name: Ручное включение вентиляции
+      icon: mdi:fan
+      
+  timer:
+
+      vent_toilet_off:
+        name: Вытяжка будет выключена через - 
+        duration: '00:15:00'
+        restore: true
+
+  automation:
+
+    - alias: Toilet ventillation - On by motion
+      trigger:
+      - platform: state
+        entity_id: binary_sensor.ms_toilet_occupancy
+        from: "off"
+        to: "on"
+      action:
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.manual_vent_toilet
+
+    - alias: Toilet ventillation - On / Off manually
+      initial_state: true
+      trigger:
+  # Платформа состояний
+        - platform: state
+          entity_id: input_button.manual_vent_toilet
+        - platform: state
+          entity_id: input_boolean.manual_vent_toilet
+        - platform: state
+          entity_id: sensor.switch_toilet_action
+          to: single_right
+  # Платформа событий
+        - platform: event
+          event_type: timer.finished
+          event_data:
+            entity_id: timer.vent_toilet_off
+      action:
+        - choose:
+            - conditions:
+                - "{{ trigger.platform == 'state' }}"
+                - condition: state
+                  entity_id: switch.switch_toilet_right
+                  state: 'off'
+              sequence:
+                - service: timer.start
+                  entity_id: timer.vent_toilet_off
+                - service: input_boolean.turn_on
+                  target:
+                    entity_id: input_boolean.manual_vent_toilet
+                - service: switch.turn_on
+                  entity_id: switch.switch_toilet_right
+            - conditions:
+                - "{{ trigger.platform == 'state' }}"
+                - condition: state
+                  entity_id: switch.switch_toilet_right
+                  state: 'on'
+              sequence:
+                - service: timer.cancel
+                  entity_id: timer.vent_toilet_off
+                - service: input_boolean.turn_off
+                  target:
+                    entity_id: input_boolean.manual_vent_toilet
+                - service: switch.turn_off
+                  entity_id: switch.switch_toilet_right
+            - conditions:
+                - "{{ trigger.platform == 'event' }}"
+              sequence:
+                - service: input_boolean.turn_off
+                  target:
+                    entity_id: input_boolean.manual_vent_toilet
+                - service: switch.turn_off
+                  entity_id: switch.switch_toilet_right

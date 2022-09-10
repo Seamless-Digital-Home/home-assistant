@@ -1,0 +1,55 @@
+tg_reminder:
+
+  input_boolean:
+    remind_flg:
+      name: "Отсылка сообщения-напоминания"
+
+  automation:
+  - alias : Remind to collect data 
+    trigger: 
+    - platform: time
+      at: "19:30:00"
+    condition:
+    - condition: template
+      value_template: "{{ now().day == 24}}"
+    action: 
+    - &notify_duty
+      service: telegram_bot.send_photo
+      data:
+        url: https://i.pinimg.com/736x/32/94/3f/32943fbe1ef5e70a15c7eecf4eabc3ab.jpg
+        caption: >
+          {% if now().month % 2 != 0 %}
+            🥴 Твоя очередь собирать показания, @samplec0de
+          {% else %}
+            @parslette, твоя очередь собирать показания 🤩
+          {% endif %}
+        inline_keyboard: [[["Done", "/done"]]]
+    - service: input_boolean.turn_on
+      entity_id: input_boolean.remind_flg
+  
+
+  - alias: "Send secondary reminders" 
+    trigger:
+    - platform: time_pattern
+      minutes: "/30"
+    condition:
+    - condition: state
+      entity_id: input_boolean.remind_flg
+      state: "on"
+    action:
+    - *notify_duty
+
+  - alias: '"Done" button trigger'
+    trigger:
+      - platform: event
+        event_type: telegram_callback
+        event_data:
+          command: "/done"
+    action:
+      - service: telegram_bot.answer_callback_query
+        data:
+          callback_query_id: "{{ trigger.event.data.id }}"
+          message: "Хорошо!"
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.remind_flg
+      

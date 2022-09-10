@@ -1,0 +1,25 @@
+bedroom_light:
+
+  automation:
+
+    - alias: Bedroom - Switch
+      id: "bedroom_switch"
+      description: >
+        ПКМ - верхний свет, ЛКМ - прикроватный свет.
+      trigger:
+      - platform: state
+        entity_id: sensor.switch_bedroom_action
+      action:
+      - choose:
+        - conditions:
+          - condition: template
+            value_template: "{{ trigger.to_state.state == \"single_right\" }}"
+          sequence:
+          - service: light.toggle
+            entity_id: light.chandelier_bedroom
+        - conditions:
+          - condition: template
+            value_template: "{{ trigger.to_state.state == \"single_left\" }}"
+          sequence:
+          - service: light.toggle
+            entity_id: light.bedside

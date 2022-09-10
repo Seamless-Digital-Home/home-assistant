@@ -1,0 +1,33 @@
+table_socket:
+  automation:
+    - alias: Macbook Switch
+      trigger:
+      - platform: state
+        entity_id: binary_sensor.macbook_pro_overfl0w_active
+      action:
+      - choose:
+        - conditions:
+          - condition: state
+            entity_id: binary_sensor.macbook_pro_overfl0w_active
+            state: "on"
+          sequence:
+          - service: switch.turn_on
+            entity_id: switch.table_l2
+          - service: notify.mobile_app_iphone_simple
+            data:
+              message: Включена
+              title: Розетка Macbook
+        - conditions:
+          - condition: state
+            entity_id: binary_sensor.macbook_pro_overfl0w_active
+            state: "off"
+          - condition: state
+            entity_id: switch.table_l2
+            state: "on"
+          sequence:
+          - service: switch.turn_off
+            entity_id: switch.table_l2
+          - service: notify.mobile_app_iphone_simple
+            data:
+              message: Выключена
+              title: Розетка Macbook

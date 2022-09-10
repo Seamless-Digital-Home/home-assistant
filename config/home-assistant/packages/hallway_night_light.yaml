@@ -1,0 +1,76 @@
+hall_night_light:
+  timer:
+
+      hall_night_light_off:
+        name: Выключение через
+        duration: '00:05:00'
+        restore: true
+
+  automation:
+    - alias: Night light -- Hall -- On by door
+      description: ''
+      trigger:
+      - platform: state
+        entity_id: binary_sensor.door_toilet_contact
+        from: "off"
+        to: "on"
+      - platform: state
+        entity_id: binary_sensor.door_bedroom_contact
+        from: "off"
+        to: "on"
+      condition:
+      - condition: time
+        after: '21:00:00'
+        before: '09:00:00'
+      action:
+      - service: light.turn_on
+        entity_id: light.light_hall
+      - service: timer.start
+        entity_id: timer.hall_night_light_off
+
+    - alias: Night light -- Hall -- On / Schedule off
+      description: ''
+      trigger:
+      - platform: state
+        entity_id: binary_sensor.ms_hall_occupancy
+      - platform: numeric_state
+        entity_id: sensor.ms_hall_illuminance_lux
+        above: 0
+      action:
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: binary_sensor.ms_hall_occupancy
+                state: 'on'
+              - condition: numeric_state
+                entity_id: sensor.ms_hall_illuminance_lux
+                below: 20
+            sequence:
+              - service: light.turn_on
+                entity_id: light.light_hall
+        default:
+          - service: timer.start
+            entity_id: timer.hall_night_light_off
+
+    - alias: Night light -- Hall -- Off / Schedule off
+      description: ''
+      trigger:
+      - platform: event
+        event_type: timer.finished
+        event_data:
+          entity_id: timer.hall_night_light_off
+      action:
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: binary_sensor.ms_hall_occupancy
+                state: 'on'
+              - condition: numeric_state
+                entity_id: sensor.ms_hall_illuminance_lux
+                below: 12
+            sequence:
+              - service: timer.start
+                entity_id: timer.hall_night_light_off
+        default:
+          - service: light.turn_off
+            entity_id: light.light_hall

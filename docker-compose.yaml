@@ -1,0 +1,73 @@
+version: '3'
+services:
+  homeassistant:
+    container_name: home-assistant
+    image: homeassistant/home-assistant:latest
+    volumes:
+      # Маппинг путей (локальный путь:путь в контейнере:режим доступа)
+      - ./config/home-assistant:/config
+      - /etc/localtime:/etc/localtime:ro
+      - /run/dbus:/run/dbus:ro
+    restart: unless-stopped
+    network_mode: host
+    privileged: true
+    depends_on:
+      - mariadb
+      - zigbee2mqtt
+      - eclipse-mosquitto
+
+
+  mariadb:
+    container_name: mariadb
+    image: mariadb:latest
+    restart: unless-stopped
+    ports:
+      - "3348:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+      MYSQL_DATABASE: ha_db
+      MYSQL_USER: homeassistant
+      MYSQL_PASSWORD: "${HA_MYSQL_PASSWORD}"
+    user: "${LOCAL_USER}:${LOCAL_USER}"
+    volumes:
+      - ./store/mariadb:/var/lib/mysql
+      # - ./store/mariadb/50-server.cnf:/etc/mysql/mariadb.conf.d/50-server.cnf
+
+
+  # eclipse-mosquitto (MQTT broker)
+  eclipse-mosquitto:
+    container_name: eclipse-mosquitto
+    image: eclipse-mosquitto:latest
+    restart: unless-stopped
+    network_mode: host
+    volumes:
+      - ./config/mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
+
+
+  zigbee2mqtt:
+    container_name: zigbee2mqtt
+    image: koenkk/zigbee2mqtt:latest
+    restart: unless-stopped
+    network_mode: host
+    environment:
+      - TZ=Europe/Moscow
+    volumes:
+      - ./config/zigbee2mqtt:/app/data
+      - /run/udev:/run/udev:ro 
+    devices:
+      - "${ZIGBEE_ADAPTER_TTY}:/dev/ttyZigbee"
+
+
+ # Visual Studio code
+  vscode:
+   container_name: vscode
+   image: codercom/code-server:latest
+   restart: unless-stopped
+   environment:
+     PASSWORD: "${VSCODE_PASSWORD}"
+   volumes:
+     - .:/home/coder/project
+     - ./store/coder:/home/coder/.local/share/code-server
+   ports:
+     - "8443:8443"
+   command: code-server --auth password --port 8443 --disable-telemetry /home/coder/project

@@ -1,0 +1,17 @@
+config/zigbee2mqtt/log/
+config/zigbee2mqtt/coordinator_backup.json
+config/zigbee2mqtt/database.db
+config/zigbee2mqtt/state.json
+config/home-assistant/.HA_VERSION
+config/home-assistant/secrets.yaml
+config/home-assistant/known_devices.yaml
+config/home-assistant/home-assistant_v2.db*
+config/home-assistant/home-assistant.log*
+config/home-assistant/image
+config/home-assistant/.cloud
+config/home-assistant/.storage
+config/home-assistant/backups
+config/home-assistant/core
+store/coder/coder-logs/
+store/mariadb/
+store/coder/

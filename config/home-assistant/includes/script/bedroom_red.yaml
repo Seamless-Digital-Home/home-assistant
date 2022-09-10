@@ -1,0 +1,37 @@
+alert_bedroom_red:
+    alias: Делает свет красным
+    description: 'На 3 секунды включает красный и возвращает как было'
+    sequence:
+
+    - service: scene.create
+      data:
+        scene_id: bedroom_chandelier_power_state
+        snapshot_entities:
+        - light.chandelier_bedroom
+
+    - service: light.turn_on
+      target:
+        entity_id: light.chandelier_bedroom
+
+    - service: scene.create
+      data:
+        scene_id: bedroom_chandelier_state
+        snapshot_entities:
+        - light.chandelier_bedroom
+  
+    - service: light.turn_on
+      data:
+        entity_id: light.chandelier_bedroom  
+        rgb_color: [255,0,0]
+        brightness_pct: 100
+      target:
+        entity_id: light.chandelier_bedroom
+
+    - delay:
+        seconds: 2
+
+    - service: scene.turn_on
+      entity_id: scene.bedroom_chandelier_state
+
+    - service: scene.turn_on
+      entity_id: scene.bedroom_chandelier_power_state

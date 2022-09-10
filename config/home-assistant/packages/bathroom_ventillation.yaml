@@ -1,0 +1,145 @@
+bathroom_ventillation:
+  input_number:
+    hum_high_on:
+      name: Влажность для включения вытяжки
+      min: 50
+      max: 70
+      step: 1
+      
+    hum_low_off:
+      name: Влажность для выключения вытяжки
+      min: 45
+      max: 60
+      step: 1
+
+  input_boolean:
+    manual_vent:
+      name: Ручное включение вентиляции
+      icon: mdi:fan
+      
+  input_button:
+    manual_vent:
+      name: Ручное включение вентиляции
+      icon: mdi:fan
+      
+  timer:
+
+      vent_off:
+        name: Вытяжка будет выключена через - 
+        duration: '00:15:00'
+        restore: true
+
+  template:   
+
+    - binary_sensor:
+
+        - name: hum_high_on
+          state: >
+            {{ is_state('switch.switch_bathroom_left', 'off')
+                and (states('sensor.bathroom_humidity') | int >= (states('input_number.hum_high_on') | int))
+                and is_state('input_boolean.manual_vent', 'off')
+            }}
+          icon: >
+            {% if is_state("binary_sensor.hum_high_on", "on") %}
+            mdi:water-plus
+            {% else %}
+            mdi:water-plus-outline
+            {% endif %}
+            
+        - name: hum_low_off
+          state: >
+            {{ is_state('switch.switch_bathroom_left', 'on')
+                and (states('sensor.bathroom_humidity') | int <= (states('input_number.hum_low_off') | int))
+                and is_state('input_boolean.manual_vent', 'off')
+            }}
+          icon: >
+            {% if is_state("binary_sensor.hum_low_off", "on") %}
+            mdi:water-minus
+            {% else %}
+            mdi:water-minus-outline
+            {% endif %}
+            
+  automation:
+
+    - id: Автоматическое управление вытяжкой
+      alias: auto_bathroom_ventilation
+      initial_state: true
+      trigger:
+        - platform: state
+          entity_id: binary_sensor.hum_high_on
+          to: 'on'
+        - platform: state
+          entity_id: binary_sensor.hum_low_off
+          to: 'on'
+      action:
+        - choose:
+            - conditions:
+                - condition: state
+                  entity_id: binary_sensor.hum_high_on
+                  state: 'on'
+              sequence:
+                - service: switch.turn_on
+                  data:
+                    entity_id: switch.switch_bathroom_left
+            - conditions:
+                - condition: state
+                  entity_id: binary_sensor.hum_low_off
+                  state: 'on'
+              sequence:
+                - service: switch.turn_off
+                  data:
+                    entity_id: switch.switch_bathroom_left
+                    
+    - id: Ручное управление вытяжкой
+      alias: manual_bathroom_ventilation
+      initial_state: true
+      trigger:
+  # Платформа состояний
+        - platform: state
+          entity_id: input_button.manual_vent
+        - platform: state
+          entity_id: input_boolean.manual_vent
+        - platform: state
+          entity_id: sensor.switch_bathroom_action
+          to: single_left
+  # Платформа событий
+        - platform: event
+          event_type: timer.finished
+          event_data:
+            entity_id: timer.vent_off
+      action:
+        - choose:
+            - conditions:
+                - "{{ trigger.platform == 'state' }}"
+                - condition: state
+                  entity_id: switch.switch_bathroom_left
+                  state: 'off'
+              sequence:
+                - service: timer.start
+                  entity_id: timer.vent_off
+                - service: input_boolean.turn_on
+                  target:
+                    entity_id: input_boolean.manual_vent
+                - service: switch.turn_on
+                  entity_id: switch.switch_bathroom_left
+            - conditions:
+                - "{{ trigger.platform == 'state' }}"
+                - condition: state
+                  entity_id: switch.switch_bathroom_left
+                  state: 'on'
+              sequence:
+                - service: timer.cancel
+                  entity_id: timer.vent_off
+                - service: input_boolean.turn_off
+                  target:
+                    entity_id: input_boolean.manual_vent
+                - service: switch.turn_off
+                  entity_id: switch.switch_bathroom_left
+            - conditions:
+                - "{{ trigger.platform == 'event' }}"
+              sequence:
+                - service: input_boolean.turn_off
+                  target:
+                    entity_id: input_boolean.manual_vent
+                - service: switch.turn_off
+                  entity_id: switch.switch_bathroom_left
