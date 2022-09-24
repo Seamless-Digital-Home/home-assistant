@@ -55,6 +55,22 @@ notify:
       media_content_id: >-
         {% if title is defined %}<speaker effect="megaphone">{{ title }}<speaker effect="-"> sil <[200]>{% endif %}{{ message }}
       media_content_type: dialog
+  - name: alice_kitchen
+    platform: yandex_station
+    data:
+      entity_id:
+      - media_player.yandex_station_ff98f0291f3926729fa5a7ec
+      media_content_id: >-
+        {% if title is defined %}<speaker effect="megaphone">{{ title }}<speaker effect="-"> sil <[200]>{% endif %}{{ message }}
+      media_content_type: dialog
+  - name: alice_bedroom
+    platform: yandex_station
+    data:
+      entity_id:
+      - media_player.ys_lite
+      media_content_id: >-
+        {% if title is defined %}<speaker effect="megaphone">{{ title }}<speaker effect="-"> sil <[200]>{% endif %}{{ message }}
+      media_content_type: dialog
   - platform: telegram
     name: tg_andrey
     chat_id: !secret tg_andrey_chat_id
