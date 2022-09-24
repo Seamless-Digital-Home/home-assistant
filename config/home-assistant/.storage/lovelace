@@ -95,7 +95,8 @@
                 },
                 {
                   "type": "custom:mushroom-title-card",
-                  "title": "Спальня"
+                  "title": "Спальня",
+                  "subtitle": ""
                 },
                 {
                   "type": "custom:mushroom-chips-card",
@@ -110,33 +111,27 @@
                     },
                     {
                       "type": "entity",
-                      "entity": "binary_sensor.door_bedroom_contact"
-                    },
-                    {
-                      "type": "entity",
                       "entity": "binary_sensor.ws_bedroom_water_leak"
-                    },
-                    {
-                      "type": "entity",
-                      "entity": "binary_sensor.ms_bedroom_occupancy"
                     }
                   ]
                 },
                 {
-                  "square": false,
-                  "columns": 2,
-                  "type": "grid",
+                  "type": "horizontal-stack",
                   "cards": [
                     {
                       "type": "custom:mushroom-light-card",
                       "entity": "light.chandelier_bedroom",
+                      "secondary_info": "none",
                       "fill_container": false,
-                      "use_light_color": true,
+                      "layout": "vertical",
+                      "use_light_color": false,
                       "show_brightness_control": false,
                       "show_color_temp_control": false,
                       "show_color_control": false,
-                      "collapsible_controls": false,
-                      "name": "Люстра",
+                      "collapsible_controls": true,
+                      "tap_action": {
+                        "action": "toggle"
+                      },
                       "hold_action": {
                         "action": "more-info"
                       },
@@ -147,10 +142,32 @@
                     {
                       "type": "custom:mushroom-light-card",
                       "entity": "light.bedside",
-                      "use_light_color": true,
+                      "icon": "mdi:bed-king",
+                      "layout": "vertical",
+                      "use_light_color": false,
                       "show_brightness_control": false,
                       "show_color_control": false,
-                      "show_color_temp_control": false,
+                      "collapsible_controls": true,
+                      "tap_action": {
+                        "action": "toggle"
+                      },
+                      "hold_action": {
+                        "action": "more-info"
+                      },
+                      "double_tap_action": {
+                        "action": "more-info"
+                      },
+                      "secondary_info": "none"
+                    },
+                    {
+                      "type": "custom:mushroom-light-card",
+                      "entity": "light.fontan",
+                      "icon": "mdi:flare",
+                      "layout": "vertical",
+                      "secondary_info": "none",
+                      "tap_action": {
+                        "action": "toggle"
+                      },
                       "hold_action": {
                         "action": "more-info"
                       },
@@ -161,8 +178,51 @@
                   ]
                 },
                 {
-                  "type": "custom:mushroom-light-card",
-                  "entity": "light.fontan"
+                  "type": "horizontal-stack",
+                  "cards": [
+                    {
+                      "type": "custom:mushroom-entity-card",
+                      "entity": "switch.monitors",
+                      "layout": "vertical",
+                      "secondary_info": "none",
+                      "tap_action": {
+                        "action": "toggle"
+                      }
+                    },
+                    {
+                      "type": "custom:mushroom-entity-card",
+                      "entity": "switch.table_l1",
+                      "icon": "mdi:microsoft-windows",
+                      "layout": "vertical",
+                      "secondary_info": "none",
+                      "name": "Lenovo",
+                      "tap_action": {
+                        "action": "toggle"
+                      }
+                    },
+                    {
+                      "type": "custom:mushroom-entity-card",
+                      "entity": "switch.table_l2",
+                      "layout": "vertical",
+                      "secondary_info": "none",
+                      "icon": "mdi:laptop",
+                      "name": "Mac",
+                      "tap_action": {
+                        "action": "toggle"
+                      }
+                    },
+                    {
+                      "type": "custom:mushroom-entity-card",
+                      "entity": "switch.switch_table_global",
+                      "layout": "vertical",
+                      "secondary_info": "none",
+                      "icon": "mdi:toggle-switch-variant",
+                      "name": "Общий",
+                      "tap_action": {
+                        "action": "toggle"
+                      }
+                    }
+                  ]
                 },
                 {
                   "type": "custom:mini-climate",
@@ -184,64 +244,6 @@
                       "toggle_action": "(state) => this.call_service('automation', 'toggle', { entity_id: \"automation.ac_door_check\"})\n"
                     }
                   }
-                },
-                {
-                  "square": true,
-                  "columns": 5,
-                  "type": "grid",
-                  "cards": [
-                    {
-                      "show_name": false,
-                      "show_icon": true,
-                      "type": "button",
-                      "tap_action": {
-                        "action": "toggle"
-                      },
-                      "entity": "switch.table_l5",
-                      "icon": "mdi:usb"
-                    },
-                    {
-                      "show_name": false,
-                      "show_icon": true,
-                      "type": "button",
-                      "tap_action": {
-                        "action": "toggle"
-                      },
-                      "entity": "switch.monitors",
-                      "icon": "mdi:monitor",
-                      "name": "LEFT"
-                    },
-                    {
-                      "show_name": false,
-                      "show_icon": true,
-                      "type": "button",
-                      "tap_action": {
-                        "action": "toggle"
-                      },
-                      "entity": "switch.table_l1",
-                      "icon": "mdi:microsoft-windows"
-                    },
-                    {
-                      "show_name": false,
-                      "show_icon": true,
-                      "type": "button",
-                      "tap_action": {
-                        "action": "toggle"
-                      },
-                      "entity": "switch.table_l2",
-                      "icon": "mdi:laptop"
-                    },
-                    {
-                      "show_name": false,
-                      "show_icon": true,
-                      "type": "button",
-                      "tap_action": {
-                        "action": "toggle"
-                      },
-                      "entity": "switch.switch_table_global",
-                      "icon": ""
-                    }
-                  ]
                 },
                 {
                   "type": "custom:mini-humidifier",
@@ -271,16 +273,12 @@
                     {
                       "type": "entity",
                       "entity": "binary_sensor.ws_kitchen_water_leak"
-                    },
-                    {
-                      "type": "entity",
-                      "entity": "binary_sensor.ms_kitchen_occupancy"
                     }
                   ]
                 },
                 {
                   "square": false,
-                  "columns": 2,
+                  "columns": 3,
                   "type": "grid",
                   "cards": [
                     {
@@ -295,7 +293,9 @@
                       },
                       "double_tap_action": {
                         "action": "more-info"
-                      }
+                      },
+                      "layout": "vertical",
+                      "secondary_info": "none"
                     },
                     {
                       "type": "custom:mushroom-entity-card",
@@ -309,18 +309,18 @@
                       },
                       "double_tap_action": {
                         "action": "more-info"
-                      }
-                    }
-                  ]
-                },
-                {
-                  "type": "entities",
-                  "show_header_toggle": false,
-                  "entities": [
+                      },
+                      "secondary_info": "none",
+                      "layout": "vertical"
+                    },
                     {
                       "type": "custom:mushroom-light-card",
                       "entity": "light.hub",
-                      "name": "Ночник",
+                      "layout": "vertical",
+                      "secondary_info": "none",
+                      "use_light_color": false,
+                      "show_brightness_control": false,
+                      "collapsible_controls": true,
                       "tap_action": {
                         "action": "toggle"
                       },
@@ -329,77 +329,9 @@
                       },
                       "double_tap_action": {
                         "action": "more-info"
-                      },
-                      "use_light_color": true,
-                      "show_brightness_control": true,
-                      "icon_type": "entity-picture",
-                      "primary_info": "name",
-                      "secondary_info": "none",
-                      "show_color_control": false,
-                      "collapsible_controls": true
-                    },
-                    {
-                      "type": "custom:rgb-light-card",
-                      "entity": "light.hub",
-                      "colors": [
-                        {
-                          "rgb_color": [
-                            255,
-                            74,
-                            254
-                          ],
-                          "brightness": 255,
-                          "transition": 1
-                        },
-                        {
-                          "rgb_color": [
-                            234,
-                            136,
-                            140
-                          ],
-                          "brightness": 255,
-                          "transition": 1
-                        },
-                        {
-                          "rgb_color": [
-                            251,
-                            180,
-                            139
-                          ],
-                          "brightness": 255,
-                          "transition": 1
-                        },
-                        {
-                          "rgb_color": [
-                            136,
-                            198,
-                            237
-                          ],
-                          "brightness": 255,
-                          "transition": 1
-                        },
-                        {
-                          "rgb_color": [
-                            140,
-                            231,
-                            185
-                          ],
-                          "brightness": 255,
-                          "transition": 1
-                        },
-                        {
-                          "rgb_color": [
-                            64,
-                            255,
-                            1
-                          ],
-                          "brightness": 255,
-                          "transition": 1
-                        }
-                      ]
+                      }
                     }
-                  ],
-                  "state_color": true
+                  ]
                 },
                 {
                   "type": "conditional",
@@ -444,26 +376,17 @@
                   "title": "Балкон"
                 },
                 {
-                  "type": "custom:mushroom-chips-card",
-                  "chips": [
-                    {
-                      "type": "entity",
-                      "entity": "binary_sensor.door_balcony_contact"
-                    }
-                  ]
-                },
-                {
-                  "type": "horizontal-stack",
-                  "cards": [
-                    {
-                      "type": "custom:mushroom-light-card",
-                      "entity": "light.balcony_left"
-                    },
-                    {
-                      "type": "custom:mushroom-light-card",
-                      "entity": "light.balcony_right"
-                    }
-                  ]
+                  "type": "custom:mushroom-light-card",
+                  "entity": "light.balkon",
+                  "tap_action": {
+                    "action": "toggle"
+                  },
+                  "hold_action": {
+                    "action": "more-info"
+                  },
+                  "double_tap_action": {
+                    "action": "more-info"
+                  }
                 },
                 {
                   "type": "custom:mushroom-title-card",
@@ -475,47 +398,6 @@
                     {
                       "type": "entity",
                       "entity": "binary_sensor.door_main_contact"
-                    },
-                    {
-                      "type": "entity",
-                      "entity": "binary_sensor.ms_hall_occupancy"
-                    }
-                  ]
-                },
-                {
-                  "square": false,
-                  "columns": 2,
-                  "type": "grid",
-                  "cards": [
-                    {
-                      "type": "custom:mushroom-light-card",
-                      "entity": "light.chandelier_hall",
-                      "name": "Люстра",
-                      "tap_action": {
-                        "action": "toggle"
-                      },
-                      "hold_action": {
-                        "action": "more-info"
-                      },
-                      "double_tap_action": {
-                        "action": "toggle"
-                      }
-                    },
-                    {
-                      "type": "custom:mushroom-light-card",
-                      "entity": "light.light_hall",
-                      "name": "Ночник",
-                      "tap_action": {
-                        "action": "toggle"
-                      },
-                      "hold_action": {
-                        "action": "more-info"
-                      },
-                      "double_tap_action": {
-                        "action": "more-info"
-                      },
-                      "use_light_color": true,
-                      "show_brightness_control": false
                     }
                   ]
                 },
@@ -556,6 +438,45 @@
                       "action": "toggle"
                     }
                   }
+                },
+                {
+                  "type": "horizontal-stack",
+                  "cards": [
+                    {
+                      "type": "custom:mushroom-light-card",
+                      "entity": "light.chandelier_hall",
+                      "secondary_info": "none",
+                      "layout": "vertical",
+                      "tap_action": {
+                        "action": "toggle"
+                      },
+                      "hold_action": {
+                        "action": "more-info"
+                      },
+                      "double_tap_action": {
+                        "action": "more-info"
+                      }
+                    },
+                    {
+                      "type": "custom:mushroom-light-card",
+                      "entity": "light.light_hall",
+                      "layout": "vertical",
+                      "secondary_info": "none",
+                      "use_light_color": false,
+                      "show_brightness_control": false,
+                      "show_color_control": false,
+                      "collapsible_controls": true,
+                      "tap_action": {
+                        "action": "toggle"
+                      },
+                      "hold_action": {
+                        "action": "more-info"
+                      },
+                      "double_tap_action": {
+                        "action": "more-info"
+                      }
+                    }
+                  ]
                 }
               ]
             },
@@ -604,11 +525,11 @@
                       "tap_action": {
                         "action": "toggle"
                       },
-                      "hold_action": {
-                        "action": "toggle"
-                      },
                       "double_tap_action": {
-                        "action": "toggle"
+                        "action": "more-info"
+                      },
+                      "hold_action": {
+                        "action": "more-info"
                       }
                     }
                   ]
@@ -658,10 +579,6 @@
                 {
                   "type": "custom:mushroom-chips-card",
                   "chips": [
-                    {
-                      "type": "entity",
-                      "entity": "binary_sensor.door_toilet_contact"
-                    },
                     {
                       "type": "entity",
                       "entity": "binary_sensor.ws_toilet_water_leak"
@@ -715,18 +632,6 @@
                   "double_tap_action": {
                     "action": "more-info"
                   }
-                },
-                {
-                  "type": "custom:mushroom-title-card",
-                  "title": "Погода"
-                },
-                {
-                  "type": "custom:hourly-weather",
-                  "entity": "weather.umnyi_dom",
-                  "num_segments": "8",
-                  "name": " ",
-                  "label_spacing": "2",
-                  "icons": true
                 }
               ]
             }
@@ -820,6 +725,41 @@
                   "entities": [
                     {
                       "entity": "input_boolean.autolight_kitchen_night_light"
+                    }
+                  ]
+                },
+                {
+                  "type": "custom:mushroom-media-player-card",
+                  "entity": "media_player.yandex_station_ff98f0291f3926729fa5a7ec",
+                  "volume_controls": [
+                    "volume_set",
+                    "volume_mute"
+                  ],
+                  "media_controls": [
+                    "play_pause_stop",
+                    "next",
+                    "previous"
+                  ],
+                  "use_media_info": true,
+                  "show_volume_level": true
+                },
+                {
+                  "type": "horizontal-stack",
+                  "cards": [
+                    {
+                      "entity": "input_text.alice_say_text",
+                      "type": "custom:text-input-row"
+                    },
+                    {
+                      "type": "custom:mushroom-entity-card",
+                      "entity": "input_button.alice_say_kitchen",
+                      "secondary_info": "none",
+                      "primary_info": "none",
+                      "layout": "horizontal",
+                      "fill_container": false,
+                      "tap_action": {
+                        "action": "toggle"
+                      }
                     }
                   ]
                 }
@@ -951,6 +891,37 @@
                   ]
                 }
               ]
+            },
+            {
+              "type": "vertical-stack",
+              "cards": [
+                {
+                  "type": "custom:mushroom-template-card",
+                  "primary": "ИБП",
+                  "secondary": "Текущее потребление {{ states('sensor.switch_ips_power') }} W\nНапряжение {{ states('sensor.switch_ips_voltage') }} V\nС 24.09.22 потрачено {{ states('sensor.switch_ips_energy') }} kWh",
+                  "icon": "mdi:power",
+                  "entity": "switch.switch_ips",
+                  "badge_icon": "",
+                  "multiline_secondary": true,
+                  "tap_action": {
+                    "action": "toggle"
+                  },
+                  "icon_color": "{% if is_state(\"switch.switch_ips\", \"on\") %}\n  blue\n{% else %}\n  grey\n{% endif %}"
+                },
+                {
+                  "type": "custom:mini-graph-card",
+                  "name": "ИБП",
+                  "hours_to_show": 24,
+                  "group_by": "hour",
+                  "aggregate_func": "avg",
+                  "entities": [
+                    {
+                      "entity": "sensor.switch_ips_power",
+                      "name": "ИБП"
+                    }
+                  ]
+                }
+              ]
             }
           ]
         },
@@ -1067,7 +1038,10 @@
                     {
                       "type": "custom:mushroom-light-card",
                       "entity": "light.toilet",
-                      "name": "Свет"
+                      "name": "Свет",
+                      "tap_action": {
+                        "action": "toggle"
+                      }
                     },
                     {
                       "type": "custom:mushroom-entity-card",
@@ -1086,20 +1060,25 @@
                   ]
                 },
                 {
-                  "type": "vertical-stack",
+                  "type": "horizontal-stack",
                   "cards": [
                     {
-                      "type": "entities",
-                      "entities": [
-                        {
-                          "entity": "input_boolean.autolight_toilet",
-                          "name": "Авто свет"
-                        },
-                        {
-                          "entity": "input_boolean.autovent_toilet",
-                          "name": "Авто вентилляция"
-                        }
-                      ]
+                      "type": "custom:mushroom-entity-card",
+                      "entity": "input_boolean.autolight_toilet",
+                      "name": "Свет",
+                      "layout": "vertical",
+                      "tap_action": {
+                        "action": "toggle"
+                      }
+                    },
+                    {
+                      "type": "custom:mushroom-entity-card",
+                      "entity": "input_boolean.autovent_toilet",
+                      "layout": "vertical",
+                      "name": "Вентилляция",
+                      "tap_action": {
+                        "action": "toggle"
+                      }
                     }
                   ]
                 },
@@ -1107,7 +1086,7 @@
                   "type": "entities",
                   "entities": [
                     {
-                      "entity": "timer.vent_toilet_off"
+                      "entity": "timer.vent_off"
                     },
                     {
                       "entity": "timer.toilet_light_off"
@@ -1161,6 +1140,41 @@
               "entity": "sensor.humidifier_humidity",
               "detail": 2,
               "name": "Влажность в спальне"
+            },
+            {
+              "type": "custom:mushroom-media-player-card",
+              "entity": "media_player.ys_lite",
+              "volume_controls": [
+                "volume_set",
+                "volume_mute"
+              ],
+              "media_controls": [
+                "play_pause_stop",
+                "next",
+                "previous"
+              ],
+              "use_media_info": true,
+              "show_volume_level": true
+            },
+            {
+              "type": "horizontal-stack",
+              "cards": [
+                {
+                  "entity": "input_text.alice_say_text",
+                  "type": "custom:text-input-row"
+                },
+                {
+                  "type": "custom:mushroom-entity-card",
+                  "entity": "input_button.alice_say_bedroom",
+                  "secondary_info": "none",
+                  "primary_info": "none",
+                  "layout": "horizontal",
+                  "fill_container": false,
+                  "tap_action": {
+                    "action": "toggle"
+                  }
+                }
+              ]
             }
           ]
         }
