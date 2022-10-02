@@ -1,0 +1,39 @@
+alice:
+
+  input_text:
+    alice_say_text:
+      name: "Текст для озвучки"
+
+  input_button:
+
+    alice_say_kitchen:
+      name: "Сказать"
+      icon: mdi:send
+
+    alice_say_bedroom:
+      name: "Сказать"
+      icon: mdi:send
+
+  automation:
+
+  - alias: Kitchen - Alice say button pressed
+    id: 'alice_say_btn_pressed_ktchn'
+    description: "Озвучивает текст на кухне из input_text.alice_say_text по нажатию input_button.alice_say_kitchen"
+    trigger:
+    - platform: state
+      entity_id: input_button.alice_say_kitchen
+    action:
+    - service: notify.alice_kitchen
+      data:
+        message: "{{ states('input_text.alice_say_text') }}"
+
+  - alias: Bedroom - Alice say button pressed
+    id: 'alice_say_btn_pressed_bedroom'
+    description: "Озвучивает текст в спальне из input_text.alice_say_text по нажатию input_button.alice_say_kitchen"
+    trigger:
+    - platform: state
+      entity_id: input_button.alice_say_bedroom
+    action:
+    - service: notify.alice_bedroom
+      data:
+        message: "{{ states('input_text.alice_say_text') }}"
