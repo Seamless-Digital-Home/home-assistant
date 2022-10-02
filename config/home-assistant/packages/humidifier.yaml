@@ -9,19 +9,19 @@ humidifier:
     - platform: template
       sensors:
         humidifier_temperature:
-          friendly_name: Humidifier temperature
+          friendly_name: Температура в кухне
           value_template: '{{ states.fan.humidifier.attributes.temperature }}'
           unit_of_measurement: '°C'
           icon_template: mdi:thermometer
           
         humidifier_humidity:
-          friendly_name: Humidifier humidity
+          friendly_name: Влажность на увлажнителе в кухне
           value_template: '{{ states.fan.humidifier.attributes.humidity }}'
           unit_of_measurement: '%'
           icon_template: mdi:water-percent
           
         humidifier_water_level:
-          friendly_name: Humidifier water level
+          friendly_name: Уровень воды в увлажнителе в кухне
           value_template: '{{ states.fan.humidifier.attributes.water_level }}'
           unit_of_measurement: '%'
           icon_template: mdi:waves
@@ -69,36 +69,6 @@ humidifier:
           icon_template: "mdi:hair-dryer"
 
   automation:
-
-  # Выключить увлажнитель
-    - alias: Humidifier turn off when humidity >60%
-      initial_state: true
-      trigger:
-        - platform: numeric_state # Влажность в комнате больше 60
-          entity_id: sensor.humidifier_humidity
-          above: 60
-      action:
-        - service: fan.turn_off
-          data:
-            entity_id: fan.humidifier
-
-  # Включить увлажнитель на максимальную скорость если влажность в комнате меньше 45
-    - alias: Humidifier turn on when humidity <45%
-      initial_state: true
-      trigger:
-        - platform: numeric_state # Влажность в комнате меньше 45
-          entity_id: sensor.humidifier_humidity
-          below: 45
-      action:
-        - service: fan.turn_on
-          data:
-            entity_id: fan.humidifier
-        - delay: '00:00:05'
-        - service: fan.set_speed
-          data:
-            entity_id: fan.humidifier
-            speed: Auto
-
     - alias: Humidifier water level <10%
       initial_state: true
       trigger:
@@ -107,5 +77,5 @@ humidifier:
       action:
         - service: notify.tg_chat
           data:
-            title: "Добавьте воды в увлажнитель"
+            title: "Добавьте воды в увлажнитель на кухне"
             message: "Осталось {{ state_attr('fan.humidifier','water_level')|int }}%"

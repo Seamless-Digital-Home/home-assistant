@@ -1,0 +1,77 @@
+humidifier2:
+  fan:
+    - platform: xiaomi_miio_airpurifier
+      host: 192.168.1.28
+      token: !secret humidifier2_token
+      name: Humidifier
+
+  sensor:
+    - platform: template
+      sensors:
+        humidifier2_temperature:
+          friendly_name: Температура в спальне
+          value_template: '{{ states.fan.humidifier_2.attributes.temperature }}'
+          unit_of_measurement: '°C'
+          icon_template: mdi:thermometer
+          
+        humidifier2_humidity:
+          friendly_name: Влажность в спальне
+          value_template: '{{ states.fan.humidifier_2.attributes.humidity }}'
+          unit_of_measurement: '%'
+          icon_template: mdi:water-percent
+
+  binary_sensor:
+    - platform: template
+      sensors:
+        humidifier2_no_water:
+          friendly_name: Нет воды в увлажнителе в спальне
+          value_template: '{{ states.fan.humidifier_2.attributes.no_water }}'
+          icon_template: mdi:waves
+
+  switch:
+    - platform: template
+      switches:
+        xiaomi_humidifier2_buzzer:
+          friendly_name: "Buzzer"
+          value_template: "{{ is_state_attr('fan.humidifier_2', 'buzzer', True) }}"
+          turn_on:
+            service: xiaomi_miio_airpurifier.fan_set_buzzer_on
+            data:
+              entity_id: fan.humidifier_2
+          turn_off:
+            service: xiaomi_miio_airpurifier.fan_set_buzzer_off
+            data:
+              entity_id: fan.humidifier_2
+          icon_template: "mdi:volume-off"
+    - platform: template
+      switches:
+        xiaomi_humidifier2_led:
+          friendly_name: "LED"
+          value_template: "{{ is_state_attr('fan.humidifier_2', 'led', True) }}"
+          turn_on:
+            service: xiaomi_miio_airpurifier.fan_set_led_on
+            data:
+              entity_id: fan.humidifier_2
+          turn_off:
+            service: xiaomi_miio_airpurifier.fan_set_led_off
+            data:
+              entity_id: fan.humidifier_2
+          icon_template: "mdi:led-off"
+
+  automation:
+
+    - alias: Humidifier2 Humidity Sync
+      id: 'humidifier_humidity_sync'
+      description: "При изменении уровня влажности, меняет таргет в увлажнителе"
+      trigger:
+      - platform: state
+        entity_id: humidifier.bedroom
+      condition:
+      - condition: template
+        value_template: >
+          {{ state_attr('humidifier.bedroom', 'humidity') != states.fan.humidifier_2.attributes.target_humidity }}
+      action:
+      - service: xiaomi_miio_airpurifier.fan_set_target_humidity
+        data:
+          entity_id: fan.humidifier_2
+          humidity: "{{ state_attr('humidifier.bedroom', 'humidity') | int}}"

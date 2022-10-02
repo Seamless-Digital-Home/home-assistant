@@ -137,8 +137,12 @@ devices:
     friendly_name: ws_bedroom_heating_battery
     description: Датчик утечки воды под батареей в спальне
   '0x00124b0024cac4ca':
+    friendly_name: switch_toothbrush
+    description: Выключает розетку зарядки зубной щетки
+  '0xa4c1382351fdcbab':
+    friendly_name: switch_ips
+  '0xa4c138e026902662':
     friendly_name: switch_table_global
-    description: Выключает розетку стола и зарядку телефона
 availability:
   active:
     timeout: 10

@@ -84,9 +84,10 @@ home_human_state_change:
           - light.bathroom
           - light.toilet
           - light.fontan
-          - fan.humidifier
           - switch.kitchen
           - climate.split_sistema
+          - humidifier.bedroom
+          - humidifier.kitchen
       - service: homeassistant.turn_off
         entity_id: *snapshot_entities
 

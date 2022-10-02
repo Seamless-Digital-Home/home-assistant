@@ -130,3 +130,14 @@ yandex_smart_home:
   - oauth_token: !secret yandex_oauth_token  # запрашивается с аккаунта владельца диалога, в котором авторизован user_id
     skill_id: !secret yandex_skill_id
     user_id: !secret yandex_user_id
+generic_hygrostat:
+  - name: Bedroom
+    humidifier: fan.humidifier_2
+    target_sensor: sensor.humidifier2_humidity
+    min_humidity: 30
+    max_humidity: 55
+  - name: Kitchen
+    humidifier: fan.humidifier
+    target_sensor: sensor.kitchen_humidity
+    min_humidity: 30
+    max_humidity: 55
