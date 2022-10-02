@@ -95,6 +95,10 @@ kitchen_night_light:
       event_type: timer.started
       event_data:
         entity_id: timer.kitchen_night_light_off
+    condition:
+    - condition: state
+      entity_id: light.chandelier_kitchen
+      state: "off"
     action:
     - service: light.turn_on
       entity_id: light.hub
